@@ -1,0 +1,323 @@
+{
+  "contentVersion": "1.0.0",
+  "config": {
+    "company": "差不多创意部",
+    "boss": { "id": "diaomao", "name": "雕茅经理", "avatarChar": "雕" },
+    "playerAvatarChar": "我",
+    "brief": {
+      "id": "x1-launch",
+      "brand": "虚构运动相机品牌「石影」",
+      "title": "新品 X1 运动相机 · DTC 独立站上新落地页",
+      "requirementLines": [
+        "新品「石影 X1」运动相机必须作为首屏主视觉，产品图与核心参数不可替换。",
+        "清楚呈现独立站首发权益与「立即购买」按钮，购买路径不超过两步。",
+        "移动端竖屏优先，首屏要能看清产品名与首发权益。"
+      ],
+      "bossExtra": "要高级，也要热闹；我还没想好，你先做。",
+      "deliverableNote": "以上为正式需求；老板后续口头想法属于插曲，不改动这份需求。"
+    },
+    "maxSubmissions": 3,
+    "pass": { "minScore": 65, "minTrust": 40, "minEvidence": 20, "altTrust": 75 },
+    "scoreWeights": { "quality": 0.6, "trust": 0.25, "evidence": 0.15, "scopeDebtPenalty": 5 },
+    "gradeBounds": [
+      { "min": 80, "grade": "S" },
+      { "min": 65, "grade": "A" },
+      { "min": 50, "grade": "B" },
+      { "min": 35, "grade": "C" },
+      { "min": 0, "grade": "D" }
+    ],
+    "statsMeta": {
+      "quality": { "label": "稿件准备度", "max": 100 },
+      "trust": { "label": "老板信任", "max": 100 },
+      "energy": { "label": "剩余精力", "max": 100 },
+      "evidence": { "label": "沟通凭证", "max": 100 },
+      "scopeDebt": { "label": "额外承诺", "max": 3, "scoreCost": "每点扣 5 分过稿指数" }
+    },
+    "bonusPool": 1000,
+    "bossShares": [70, 75, 80],
+    "negotiate": { "requires": { "evidence": 40, "trust": 40 }, "playerShare": 75 },
+    "redPacket": { "self": 20, "boss": 0 },
+    "currency": "元（游戏内）"
+  },
+  "templates": [
+    {
+      "id": "business",
+      "name": "信息优先",
+      "tagline": "把卖点和按钮摆得明明白白",
+      "description": "参数、权益、FAQ 排得规规矩矩，转化路径清楚，但看起来比较「老实」。",
+      "stats": { "quality": 50, "trust": 50, "energy": 80, "evidence": 30, "scopeDebt": 0 }
+    },
+    {
+      "id": "visual",
+      "name": "视觉大字",
+      "tagline": "大标语冲出首屏",
+      "description": "产品 hero 图 + 大标题气势足，老板第一眼容易记住，但购买信息不够显眼。",
+      "stats": { "quality": 55, "trust": 45, "energy": 85, "evidence": 10, "scopeDebt": 0 }
+    },
+    {
+      "id": "classic",
+      "name": "常规卡片",
+      "tagline": "行业里最常见的落地页版式",
+      "description": "出海 DTC 品牌站最常见的上新版式，不出错也不出挑，老板信任基础好一些。",
+      "stats": { "quality": 45, "trust": 60, "energy": 75, "evidence": 20, "scopeDebt": 0 }
+    }
+  ],
+  "preparations": [
+    {
+      "id": "improve",
+      "name": "深化排版",
+      "description": "重排层级，突出重点。稿件准备度大幅提升，但很耗精力。",
+      "deltas": { "quality": 15, "energy": -18 },
+      "resultText": "你把版式层级重排了一遍，重点确实更突出了，眼睛也有点花。"
+    },
+    {
+      "id": "clarify",
+      "name": "对需求逐条打钩",
+      "description": "逐条核对正式需求，留下核对记录。凭证与稿件都小幅提升。",
+      "deltas": { "quality": 5, "evidence": 15, "energy": -12 },
+      "resultText": "你把三条正式需求逐条打钩并截图存档，心里有底多了。"
+    },
+    {
+      "id": "motion",
+      "name": "加一点动效",
+      "description": "给页面加小型动效标记。老板口头喜欢「热闹」，稿件小升、信任小升。",
+      "deltas": { "quality": 8, "trust": 5, "energy": -12 },
+      "resultText": "你在按钮上加了个轻微的呼吸动效，雕茅经理路过时点了点头。"
+    },
+    {
+      "id": "align",
+      "name": "按行业惯例对齐",
+      "description": "参考常见活动页规范对齐版式与按钮，准备度和凭证小幅提升。",
+      "deltas": { "quality": 10, "evidence": 5, "energy": -15 },
+      "resultText": "你按行业惯例把框线和按钮位置对齐了，看起来专业了一些。"
+    },
+    {
+      "id": "rest",
+      "name": "保存体力",
+      "description": "摸鱼半小时回血。稿件不变，精力回复（超出上限按实际回复计算）。",
+      "deltas": { "energy": 25 },
+      "resultText": "你趴了半小时，什么都没改，但人缓过来一点。"
+    }
+  ],
+  "responses": [
+    {
+      "id": "ask",
+      "name": "追问具体哪里奇怪",
+      "description": "请老板指出具体问题。留下对话凭证，但老板有点不耐烦。",
+      "deltas": { "evidence": 15, "trust": -5, "energy": -5 },
+      "resultText": "雕茅经理盯着稿子看了十秒：「说不上来，反正感觉很奇怪。」你把这句记了下来。"
+    },
+    {
+      "id": "accept",
+      "name": "先答应全都改",
+      "description": "不争辩，全接。老板满意，但欠下额外承诺，凭证变少。",
+      "deltas": { "trust": 15, "evidence": -5, "scopeDebt": 1 },
+      "resultText": "你说「好的都改」，雕茅经理很满意。你的待办清单悄悄长了一截。"
+    },
+    {
+      "id": "push",
+      "name": "拿出依据逐条回应",
+      "description": "用需求文档和核对记录回应。凭证大涨，老板不太高兴。",
+      "deltas": { "evidence": 20, "trust": -8, "energy": -8 },
+      "resultText": "你把三条正式需求逐条念了一遍，雕茅经理摆摆手：「你先按我说的改。」但你留下了完整记录。"
+    }
+  ],
+  "events": [
+    {
+      "id": "E01",
+      "title": "顺手的事",
+      "scene": "雕茅经理探过头来：「独立站主视觉顺手的话，亚马逊 A+ 页面也一起出了吧？反正都是图。」",
+      "weight": 3,
+      "options": [
+        {
+          "id": "record",
+          "name": "记进备忘录并确认范围",
+          "description": "当场记下这单活并确认今天先交独立站落地页。",
+          "deltas": { "evidence": 10, "energy": -5 },
+          "resultText": "你边点头边打字：「落地页今天交，A+ 页排下周。」备忘录+1，凭证+1。"
+        },
+        {
+          "id": "free",
+          "name": "免费帮个忙",
+          "description": "都是同事，帮了。老板高兴，但你欠下一笔额外承诺。",
+          "deltas": { "trust": 10, "scopeDebt": 1 },
+          "resultText": "你笑着说没问题。雕茅经理很高兴，你的下班时间没有了。"
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "title": "产品经理的紧急消息",
+      "scene": "产品经理发来 60 条消息：「首发权益文案改了，主标题换掉，现在就要。」",
+      "weight": 3,
+      "options": [
+        {
+          "id": "confirm",
+          "name": "要求书面确认新版本",
+          "description": "请对方在需求文档里更新后再改。凭证提升，关系略紧张。",
+          "deltas": { "evidence": 15, "trust": -5 },
+          "resultText": "你回复：「麻烦更新一下需求文档，我按文档来。」对话框安静了五分钟，然后文档真的更新了。"
+        },
+        {
+          "id": "absorb",
+          "name": "默默吸收进稿子",
+          "description": "不扯皮，自己扛。老板觉得你顾全大局，但你很累。",
+          "deltas": { "trust": 5, "energy": -10 },
+          "resultText": "你叹了口气，把新文案贴了进去。谁也没吵起来，除了你有点虚。"
+        }
+      ]
+    },
+    {
+      "id": "E03",
+      "title": "五个浮层",
+      "scene": "运营希望落地页「顺便」加五个浮层：订阅弹窗、优惠倒计时、客服气泡、APP 引导、问卷。「多点触点多点转化嘛。」",
+      "weight": 2,
+      "options": [
+        {
+          "id": "keep",
+          "name": "保主入口并给出说明",
+          "description": "保留主购买按钮，附上一句转化逻辑说明发进群里。",
+          "deltas": { "evidence": 10, "quality": 5 },
+          "resultText": "你在群里发：「浮层堆五个，用户第一个弹窗就走了，购买按钮反而没人点。」运营回了个「好吧」。"
+        },
+        {
+          "id": "all",
+          "name": "全都加上",
+          "description": "加就加，谁也别吵。页面变乱，还欠下额外承诺。",
+          "deltas": { "quality": -10, "trust": 5, "scopeDebt": 1 },
+          "resultText": "五个浮层整整齐齐叠了上去。页面热闹了，「立即购买」被压在最底下。"
+        }
+      ]
+    },
+    {
+      "id": "E04",
+      "title": "别人家的独立站",
+      "scene": "雕茅经理在群里转发了一个链接：「别人家这个落地页就很好，你参考一下。」首屏是个全屏视频自动播放。",
+      "weight": 3,
+      "options": [
+        {
+          "id": "benchmark",
+          "name": "拆解对齐做一版",
+          "description": "认真拆解对方结构，取其精华。稿件提升，人很累。",
+          "deltas": { "quality": 10, "energy": -10 },
+          "resultText": "你拆完发现对方好看的其实是那条滑雪实拍视频。你还是吸收了它的信息层级。"
+        },
+        {
+          "id": "ack",
+          "name": "只回复「收到」",
+          "description": "不接招，先保住体力。老板有点不高兴。",
+          "deltas": { "energy": 8, "trust": -8 },
+          "resultText": "你回了「收到」，顺手把手机扣在桌上，闭目养神了三分钟。"
+        }
+      ]
+    },
+    {
+      "id": "E05",
+      "title": "排期冲突",
+      "scene": "前端说：「这个滚动交互建站工具做不了，要写自定义代码，排两周，你确定要上？」",
+      "weight": 2,
+      "options": [
+        {
+          "id": "simplify",
+          "name": "砍掉特效保上线",
+          "description": "退一步海阔天空，稿件小升，也留下了沟通凭证。",
+          "deltas": { "quality": 5, "evidence": 5 },
+          "resultText": "你说：「保上线，动效砍到最简。」前端立刻给你排了明天。"
+        },
+        {
+          "id": "wait",
+          "name": "接受顺延",
+          "description": "好东西值得等。凭证小升，老板等得不太高兴。",
+          "deltas": { "evidence": 8, "trust": -8 },
+          "resultText": "排期顺延一周。你在周会上说「是为了品质」，雕茅经理「嗯」了一声。"
+        }
+      ]
+    },
+    {
+      "id": "E06",
+      "title": "深夜 60 秒语音",
+      "scene": "23:47，雕茅经理发来四条 60 秒语音，内容大概是「你再感受一下」。",
+      "weight": 3,
+      "options": [
+        {
+          "id": "listen",
+          "name": "逐条听完做纪要",
+          "description": "戴耳机听完并整理成文字纪要。凭证大涨，人更困了。",
+          "deltas": { "evidence": 15, "energy": -10 },
+          "resultText": "你听完四条语音，整理出 12 字有效信息：「logo 再大点，红一点，动一点。」"
+        },
+        {
+          "id": "tomorrow",
+          "name": "明早再回",
+          "description": "装睡。体力回复，老板记住了你的沉默。",
+          "deltas": { "energy": 10, "trust": -5 },
+          "resultText": "你把手机调成勿扰。睡眠充足，但明早的对话不会太轻松。"
+        }
+      ]
+    }
+  ],
+  "reviews": {
+    "prefix": "感觉很奇怪。",
+    "sGradeLine": "自己再想想吧。",
+    "lines": {
+      "S": {
+        "passed": "……不过这版确实挑不出大毛病，流程上先过了吧。细节你自己再把控把控。",
+        "fail": "方向对了，但我说不上来哪里还差一口气。你再琢磨琢磨，别辜负这版稿子。"
+      },
+      "A": {
+        "passed": "这次总算有点样子了。先这样，细节后面有空再抠一抠。",
+        "fail": "差点意思。你再改改，明天上午我要看新版本。"
+      },
+      "B": {
+        "passed": "嗯……能用的水平。就这样吧，我对外就说我们团队很务实。",
+        "fail": "这稿子吧，能用，但不够高级，也不够热闹。你自己再想想问题出在哪。"
+      },
+      "C": {
+        "passed": "虽然我很想毙了它，但时间来不及了。过，但我保留意见。",
+        "fail": "你自己看这像话吗？产品图呢？购买按钮呢？用户进来三秒知道你卖什么吗？回去重做。"
+      },
+      "D": {
+        "passed": "……我是很想给你过的，但你要不先看看需求文档？算了，赶时间，过。",
+        "fail": "我看你是没用心。需求文档发你三天了，你告诉我这是啥？"
+      }
+    }
+  },
+  "endings": [
+    {
+      "id": "PASS_PROTECTED",
+      "title": "过稿·硬气版",
+      "body": "稿子过了，分成也谈回来了。你保存了这单的全部沟通记录——它们没白记。雕茅经理在庆功群里说「团队作战的胜利」，你看着自己 75% 的分成，第一次觉得这句话没说错。",
+      "hint": "想再稳一点？试试「对需求逐条打钩」和「拿出依据逐条回应」，凭证是谈判的底气。"
+    },
+    {
+      "id": "PASS_COMPROMISE",
+      "title": "过稿·和气版",
+      "body": "稿子过了，奖金也到账了，只是大部分进了雕茅经理的口袋。你在心里算了算自己加的班，决定下次把记录留得再全一点。今天，先准点下班吧。",
+      "hint": "想多拿点分成？攒够 40 点凭证和 40 点信任，就有资格「凭记录谈分成」。"
+    },
+    {
+      "id": "BURNOUT",
+      "title": "燃尽",
+      "body": "改到第三版，你在工位上睡着了。梦里那台 X1 的镜头一直对着你对焦，怎么也不合焦。雕茅经理路过时小声说「让她睡会儿」，这是他今天说过最像人的话。",
+      "hint": "精力见底前，记得「保存体力」——它不加分，但它保命。"
+    },
+    {
+      "id": "FIRED",
+      "title": "优化毕业",
+      "body": "第三版还是没过。下午，HR 抱着一箱纸巾过来，说公司决定让你「去更大的平台看看」。雕茅经理没露面，只在群里发了个握手的表情。",
+      "hint": "信任太低时，第三轮退回就是红线。少顶嘴，多用记录说话，或者……干脆早点跑。"
+    },
+    {
+      "id": "LOOP",
+      "title": "无限改稿循环",
+      "body": "第三版交上去，雕茅经理说：「嗯，还是第一版的方向好。」你看着时间戳，意识到这场对话可以无限进行下去。你保存了文件，命名为「X1-上新-终稿-最终确定版-3(1).fig」。",
+      "hint": "分数不够 65 就不会过。与其原地打转，不如提前把「稿件准备度」堆上去。"
+    },
+    {
+      "id": "QUIT",
+      "title": "主动下班",
+      "body": "你合上电脑，跟雕茅经理说「今天先这样，明天见」。走出公司大门，晚风很凉，你的精力还在，奖金没有，但今晚是你的。改稿的事，明天再说。",
+      "hint": "退出也是一种结局。不过想赢的话，记得：最多三次提交，选择决定过稿。"
+    }
+  ]
+}

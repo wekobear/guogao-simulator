@@ -1,0 +1,1168 @@
+{
+  "seed": 1,
+  "contentVersion": "1.0.0",
+  "generatedBy": "tools/verify_spec.py",
+  "paths": [
+    {
+      "actions": [
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "ask"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "confirm"
+        },
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_BONUS",
+          "id": "negotiate"
+        },
+        {
+          "type": "CHOOSE_PARTY",
+          "id": "self"
+        }
+      ],
+      "expected": [
+        {
+          "phase": "REVIEW",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 50,
+            "energy": 62,
+            "evidence": 30,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 50,
+            "energy": 62,
+            "evidence": 30,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 45,
+            "energy": 57,
+            "evidence": 45,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 2,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 40,
+            "energy": 57,
+            "evidence": 60,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "REVIEW",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 80,
+            "trust": 40,
+            "energy": 39,
+            "evidence": 60,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 67,
+            "grade": "A",
+            "passed": true
+          }
+        },
+        {
+          "phase": "BONUS",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 80,
+            "trust": 40,
+            "energy": 39,
+            "evidence": 60,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 67,
+            "grade": "A",
+            "passed": true
+          },
+          "bonusCash": 0,
+          "playerShare": null
+        },
+        {
+          "phase": "PARTY",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 80,
+            "trust": 40,
+            "energy": 39,
+            "evidence": 60,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 67,
+            "grade": "A",
+            "passed": true
+          },
+          "bonusCash": 750,
+          "playerShare": 75
+        },
+        {
+          "phase": "ENDING",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 80,
+            "trust": 40,
+            "energy": 39,
+            "evidence": 60,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 67,
+            "grade": "A",
+            "passed": true
+          },
+          "endingId": "PASS_PROTECTED",
+          "bonusCash": 770,
+          "playerShare": 75
+        }
+      ],
+      "templateId": "business",
+      "endingId": "PASS_PROTECTED"
+    },
+    {
+      "actions": [
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "ask"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "confirm"
+        },
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_BONUS",
+          "id": "accept"
+        },
+        {
+          "type": "CHOOSE_PARTY",
+          "id": "self"
+        }
+      ],
+      "expected": [
+        {
+          "phase": "REVIEW",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 50,
+            "energy": 62,
+            "evidence": 30,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 50,
+            "energy": 62,
+            "evidence": 30,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 45,
+            "energy": 57,
+            "evidence": 45,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 2,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 40,
+            "energy": 57,
+            "evidence": 60,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "REVIEW",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 80,
+            "trust": 40,
+            "energy": 39,
+            "evidence": 60,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 67,
+            "grade": "A",
+            "passed": true
+          }
+        },
+        {
+          "phase": "BONUS",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 80,
+            "trust": 40,
+            "energy": 39,
+            "evidence": 60,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 67,
+            "grade": "A",
+            "passed": true
+          },
+          "bonusCash": 0,
+          "playerShare": null
+        },
+        {
+          "phase": "PARTY",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 80,
+            "trust": 40,
+            "energy": 39,
+            "evidence": 60,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 67,
+            "grade": "A",
+            "passed": true
+          },
+          "bonusCash": 250,
+          "playerShare": 25
+        },
+        {
+          "phase": "ENDING",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 80,
+            "trust": 40,
+            "energy": 39,
+            "evidence": 60,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 67,
+            "grade": "A",
+            "passed": true
+          },
+          "endingId": "PASS_COMPROMISE",
+          "bonusCash": 270,
+          "playerShare": 25
+        }
+      ],
+      "templateId": "business",
+      "endingId": "PASS_COMPROMISE"
+    },
+    {
+      "actions": [
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "push"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "absorb"
+        },
+        {
+          "type": "SUBMIT_PREP",
+          "id": "align"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "push"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "keep"
+        },
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        }
+      ],
+      "expected": [
+        {
+          "phase": "REVIEW",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 60,
+            "trust": 60,
+            "energy": 57,
+            "evidence": 20,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 54,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 60,
+            "trust": 60,
+            "energy": 57,
+            "evidence": 20,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 54,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 60,
+            "trust": 52,
+            "energy": 49,
+            "evidence": 40,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 54,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 2,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 60,
+            "trust": 57,
+            "energy": 39,
+            "evidence": 40,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "REVIEW",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 70,
+            "trust": 57,
+            "energy": 24,
+            "evidence": 45,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 63,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 70,
+            "trust": 57,
+            "energy": 24,
+            "evidence": 45,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 63,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 70,
+            "trust": 49,
+            "energy": 16,
+            "evidence": 65,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 63,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 3,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 75,
+            "trust": 49,
+            "energy": 16,
+            "evidence": 75,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "ENDING",
+          "round": 3,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 90,
+            "trust": 49,
+            "energy": 0,
+            "evidence": 75,
+            "scopeDebt": 0
+          },
+          "endingId": "BURNOUT"
+        }
+      ],
+      "templateId": "classic",
+      "endingId": "BURNOUT"
+    },
+    {
+      "actions": [
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "push"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "confirm"
+        },
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "push"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "keep"
+        },
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        }
+      ],
+      "expected": [
+        {
+          "phase": "REVIEW",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 70,
+            "trust": 45,
+            "energy": 67,
+            "evidence": 10,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 55,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 70,
+            "trust": 45,
+            "energy": 67,
+            "evidence": 10,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 55,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 70,
+            "trust": 37,
+            "energy": 59,
+            "evidence": 30,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 55,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 2,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 70,
+            "trust": 32,
+            "energy": 59,
+            "evidence": 45,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "REVIEW",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 85,
+            "trust": 32,
+            "energy": 41,
+            "evidence": 45,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 66,
+            "grade": "A",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 85,
+            "trust": 32,
+            "energy": 41,
+            "evidence": 45,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 66,
+            "grade": "A",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 85,
+            "trust": 24,
+            "energy": 33,
+            "evidence": 65,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 66,
+            "grade": "A",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 3,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 90,
+            "trust": 24,
+            "energy": 33,
+            "evidence": 75,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "REVIEW",
+          "round": 3,
+          "submittedCount": 3,
+          "stats": {
+            "quality": 100,
+            "trust": 24,
+            "energy": 15,
+            "evidence": 75,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 77,
+            "grade": "A",
+            "passed": false
+          }
+        },
+        {
+          "phase": "ENDING",
+          "round": 3,
+          "submittedCount": 3,
+          "stats": {
+            "quality": 100,
+            "trust": 24,
+            "energy": 15,
+            "evidence": 75,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 77,
+            "grade": "A",
+            "passed": false
+          },
+          "endingId": "FIRED"
+        }
+      ],
+      "templateId": "visual",
+      "endingId": "FIRED"
+    },
+    {
+      "actions": [
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "ask"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "confirm"
+        },
+        {
+          "type": "SUBMIT_PREP",
+          "id": "clarify"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "ask"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "keep"
+        },
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        }
+      ],
+      "expected": [
+        {
+          "phase": "REVIEW",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 50,
+            "energy": 62,
+            "evidence": 30,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 50,
+            "energy": 62,
+            "evidence": 30,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 45,
+            "energy": 57,
+            "evidence": 45,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 2,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 40,
+            "energy": 57,
+            "evidence": 60,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "REVIEW",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 70,
+            "trust": 40,
+            "energy": 45,
+            "evidence": 75,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 63,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 70,
+            "trust": 40,
+            "energy": 45,
+            "evidence": 75,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 63,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 70,
+            "trust": 35,
+            "energy": 40,
+            "evidence": 90,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 63,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 3,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 75,
+            "trust": 35,
+            "energy": 40,
+            "evidence": 100,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "REVIEW",
+          "round": 3,
+          "submittedCount": 3,
+          "stats": {
+            "quality": 90,
+            "trust": 35,
+            "energy": 22,
+            "evidence": 100,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 78,
+            "grade": "A",
+            "passed": false
+          }
+        },
+        {
+          "phase": "ENDING",
+          "round": 3,
+          "submittedCount": 3,
+          "stats": {
+            "quality": 90,
+            "trust": 35,
+            "energy": 22,
+            "evidence": 100,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 78,
+            "grade": "A",
+            "passed": false
+          },
+          "endingId": "LOOP"
+        }
+      ],
+      "templateId": "business",
+      "endingId": "LOOP"
+    },
+    {
+      "actions": [
+        {
+          "type": "SUBMIT_PREP",
+          "id": "improve"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "ask"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "confirm"
+        },
+        {
+          "type": "SUBMIT_PREP",
+          "id": "clarify"
+        },
+        {
+          "type": "CONTINUE_REVIEW"
+        },
+        {
+          "type": "CHOOSE_RESPONSE",
+          "id": "ask"
+        },
+        {
+          "type": "CHOOSE_EVENT_OPTION",
+          "id": "keep"
+        },
+        {
+          "type": "CONFIRM_QUIT"
+        }
+      ],
+      "expected": [
+        {
+          "phase": "REVIEW",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 50,
+            "energy": 62,
+            "evidence": 30,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 50,
+            "energy": 62,
+            "evidence": 30,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 1,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 45,
+            "energy": 57,
+            "evidence": 45,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 56,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 2,
+          "submittedCount": 1,
+          "stats": {
+            "quality": 65,
+            "trust": 40,
+            "energy": 57,
+            "evidence": 60,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "REVIEW",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 70,
+            "trust": 40,
+            "energy": 45,
+            "evidence": 75,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 63,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "RESPOND",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 70,
+            "trust": 40,
+            "energy": 45,
+            "evidence": 75,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 63,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "EVENT",
+          "round": 2,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 70,
+            "trust": 35,
+            "energy": 40,
+            "evidence": 90,
+            "scopeDebt": 0
+          },
+          "review": {
+            "score": 63,
+            "grade": "B",
+            "passed": false
+          }
+        },
+        {
+          "phase": "PREPARE",
+          "round": 3,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 75,
+            "trust": 35,
+            "energy": 40,
+            "evidence": 100,
+            "scopeDebt": 0
+          }
+        },
+        {
+          "phase": "ENDING",
+          "round": 3,
+          "submittedCount": 2,
+          "stats": {
+            "quality": 75,
+            "trust": 35,
+            "energy": 40,
+            "evidence": 100,
+            "scopeDebt": 0
+          },
+          "endingId": "QUIT"
+        }
+      ],
+      "templateId": "business",
+      "endingId": "QUIT"
+    }
+  ],
+  "sGradePath": [
+    {
+      "type": "SUBMIT_PREP",
+      "id": "improve"
+    },
+    {
+      "type": "CONTINUE_REVIEW"
+    },
+    {
+      "type": "CHOOSE_RESPONSE",
+      "id": "push"
+    },
+    {
+      "type": "CHOOSE_EVENT_OPTION",
+      "id": "confirm"
+    },
+    {
+      "type": "SUBMIT_PREP",
+      "id": "improve"
+    },
+    {
+      "type": "CONTINUE_REVIEW"
+    },
+    {
+      "type": "CHOOSE_RESPONSE",
+      "id": "ask"
+    },
+    {
+      "type": "CHOOSE_EVENT_OPTION",
+      "id": "keep"
+    },
+    {
+      "type": "SUBMIT_PREP",
+      "id": "improve"
+    }
+  ]
+}

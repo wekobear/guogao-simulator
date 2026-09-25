@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260" width="720" height="260">
+  <defs>
+    <!-- 纸张与物件的柔和扁平投影 -->
+    <filter id="soft-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="7" stdDeviation="12" flood-color="#4A4135" flood-opacity="0.06"/>
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#4A4135" flood-opacity="0.03"/>
+    </filter>
+    <filter id="cup-shadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#4A4135" flood-opacity="0.06"/>
+    </filter>
+    <filter id="pen-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="2" dy="5" stdDeviation="6" flood-color="#4A4135" flood-opacity="0.05"/>
+    </filter>
+  </defs>
+
+  <!-- 暖白背景 #F6F3EC -->
+  <rect width="720" height="260" fill="#F6F3EC"/>
+
+  <!-- 主图组合层 -->
+  <g id="scene">
+    
+    <!-- 1. 茶杯 (居左，极简扁平俯视图) -->
+    <g id="tea-cup" transform="translate(136, 130)" filter="url(#cup-shadow)">
+      <!-- 杯碟 -->
+      <circle cx="0" cy="0" r="38" fill="#ECE6DC"/>
+      <circle cx="0" cy="0" r="36.5" fill="#F1ECE3"/>
+      
+      <!-- 杯把 (右侧弧形) -->
+      <path d="M 22,-8 C 35,-8 35,8 22,8" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M 22,-8 C 35,-8 35,8 22,8" fill="none" stroke="#E2DBD0" stroke-width="1.2" stroke-linecap="round"/>
+
+      <!-- 白瓷杯身 -->
+      <circle cx="0" cy="0" r="25" fill="#FFFFFF"/>
+      <circle cx="0" cy="0" r="24.5" fill="none" stroke="#E5DFD4" stroke-width="1"/>
+      
+      <!-- 杯中茶汤 (点缀沉静深绿 #28624F) -->
+      <circle cx="0" cy="0" r="20" fill="#28624F"/>
+      <!-- 茶面微光弧线与涟漪 -->
+      <path d="M -14,-6 A 16 16 0 0 1 11,-11" fill="none" stroke="#3C7B67" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+      <circle cx="0" cy="0" r="13" fill="none" stroke="#225443" stroke-width="1" opacity="0.5"/>
+
+      <!-- 碟旁点缀两片极简小叶 (深绿 #28624F) -->
+      <g transform="translate(-32, 22) rotate(-35)">
+        <path d="M 0,0 C 5,-4 11,-2 13,3 C 8,7 2,5 0,0 Z" fill="#28624F"/>
+      </g>
+      <g transform="translate(-24, 30) rotate(15)">
+        <path d="M 0,0 C 4,-3 8,-1 10,2 C 6,5 2,4 0,0 Z" fill="#28624F" opacity="0.85"/>
+      </g>
+    </g>
+
+    <!-- 2. 白色审批单 / 设计稿纸张 (居中偏右) -->
+    <g id="sheet-group" filter="url(#soft-shadow)">
+      <g transform="rotate(-0.6 360 128)">
+        <!-- 纸张底色白 #FFFFFF -->
+        <rect x="220" y="38" width="280" height="180" rx="6" fill="#FFFFFF"/>
+        
+        <!-- 表头装订/卡槽示意与极简装饰点缀 (含深绿 #28624F) -->
+        <rect x="246" y="58" width="24" height="4" rx="2" fill="#28624F" opacity="0.9"/>
+        <circle cx="470" cy="60" r="2.5" fill="#E2DCD3"/>
+        <line x1="246" y1="74" x2="474" y2="74" stroke="#F0ECE4" stroke-width="1.2"/>
+
+        <!-- 灰色文字线 (无任何实际文字/字母，纯几何线条象征排版) -->
+        <rect x="246" y="86" width="96" height="6.5" rx="3.25" fill="#D3CCC1"/>
+        <rect x="246" y="100" width="186" height="4.5" rx="2.25" fill="#E7E2D8"/>
+        <rect x="246" y="111" width="168" height="4.5" rx="2.25" fill="#E7E2D8"/>
+        <rect x="246" y="122" width="142" height="4.5" rx="2.25" fill="#E7E2D8"/>
+
+        <!-- 细分隔线与项目列表线 -->
+        <line x1="246" y1="138" x2="474" y2="138" stroke="#F4F0E8" stroke-width="1" stroke-dasharray="3 3"/>
+        <rect x="246" y="148" width="8" height="8" rx="2" fill="#E2DCD2"/>
+        <rect x="260" y="150" width="128" height="4.5" rx="2.25" fill="#E7E2D8"/>
+        
+        <rect x="246" y="163" width="8" height="8" rx="2" fill="#E2DCD2"/>
+        <rect x="260" y="165" width="112" height="4.5" rx="2.25" fill="#E7E2D8"/>
+
+        <rect x="246" y="178" width="8" height="8" rx="2" fill="#E2DCD2"/>
+        <rect x="260" y="180" width="88" height="4.5" rx="2.25" fill="#E7E2D8"/>
+
+        <!-- 低饱和红 (#B83D36) 圆形印章效果 (章内留空与极简几何笔画，无文字) -->
+        <g id="sheet-stamp" transform="translate(424, 156) rotate(-11)">
+          <!-- 外圈红描边 -->
+          <circle cx="0" cy="0" r="28" fill="none" stroke="#B83D36" stroke-width="2.5" opacity="0.85"/>
+          <!-- 内圈细线 -->
+          <circle cx="0" cy="0" r="23" fill="none" stroke="#B83D36" stroke-width="1.2" opacity="0.8"/>
+          
+          <!-- 章内简单笔画与内框留白设计 (极简几何印纹，无任何文字/字母) -->
+          <rect x="-14" y="-14" width="28" height="28" rx="2" fill="none" stroke="#B83D36" stroke-width="0.9" opacity="0.75"/>
+          <line x1="-8" y1="-5" x2="8" y2="-5" stroke="#B83D36" stroke-width="2" stroke-linecap="round" opacity="0.82"/>
+          <line x1="-5" y1="4" x2="5" y2="4" stroke="#B83D36" stroke-width="2" stroke-linecap="round" opacity="0.82"/>
+          <line x1="0" y1="-8" x2="0" y2="7" stroke="#B83D36" stroke-width="2" stroke-linecap="round" opacity="0.82"/>
+
+          <!-- 盖章自然斑驳小圆点 (暖白微点模拟印泥脱墨飞白) -->
+          <circle cx="16" cy="-12" r="1.1" fill="#FFFFFF"/>
+          <circle cx="-18" cy="10" r="1.3" fill="#FFFFFF"/>
+          <circle cx="7" cy="18" r="0.9" fill="#FFFFFF"/>
+          <circle cx="-5" cy="-17" r="0.8" fill="#FFFFFF"/>
+          <circle cx="1" cy="1" r="1" fill="#FFFFFF"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- 3. 极简笔 (居右侧，扁平平放俯视) -->
+    <g id="pen" transform="translate(564, 134) rotate(16)" filter="url(#pen-shadow)">
+      <!-- 笔夹 (金属淡灰) -->
+      <rect x="4.5" y="-45" width="2.5" height="42" rx="1.25" fill="#D2CBC1"/>
+      <rect x="4.5" y="-6" width="3.5" height="3" rx="1" fill="#BAAF9F"/>
+
+      <!-- 笔帽 -->
+      <rect x="-4.5" y="-72" width="9" height="52" rx="3" fill="#3D3B38"/>
+      <!-- 金属连接环 -->
+      <rect x="-4.5" y="-20" width="9" height="3" fill="#DDD7CE"/>
+      <!-- 点缀深绿细圈 (#28624F) -->
+      <rect x="-4.5" y="-17" width="9" height="2.5" fill="#28624F"/>
+      
+      <!-- 笔身主体 -->
+      <rect x="-4" y="-14.5" width="8" height="66" rx="2" fill="#FFFFFF" stroke="#E5E0D5" stroke-width="0.8"/>
+      <!-- 笔握段 -->
+      <path d="M -4,51.5 L -2.5,72 L 2.5,72 L 4,51.5 Z" fill="#EAE4DA"/>
+      <!-- 笔尖 (金属深灰) -->
+      <path d="M -2.5,72 L 0,84 L 2.5,72 Z" fill="#999084"/>
+      <!-- 笔尖墨缝线 -->
+      <line x1="0" y1="72" x2="0" y2="80" stroke="#3D3B38" stroke-width="0.7"/>
+    </g>
+
+  </g>
+</svg>

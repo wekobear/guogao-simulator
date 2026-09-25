@@ -1,0 +1,39 @@
+{
+  "name": "guogao-simulator",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "过稿模拟器——短局职场讽刺网页游戏（纯前端，无后端）",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "validate:content": "tsx tools/validate-content.ts"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.0",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^5.0.0",
+    "eslint": "^9.30.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "tsx": "^4.20.3",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.35.0",
+    "vite": "^7.1.0",
+    "vitest": "^3.2.4"
+  }
+}

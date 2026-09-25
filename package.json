@@ -1,7 +1,7 @@
 {
   "name": "guogao-simulator",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.1.0",
   "type": "module",
   "description": "过稿模拟器——短局职场讽刺网页游戏（纯前端，无后端）",
   "scripts": {

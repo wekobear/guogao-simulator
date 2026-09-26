@@ -7,3 +7,10 @@ test-results
 # 本地工具状态（非项目代码）
 .video_agent
 .zcodeignore
+
+# m3e-canvas vendored app（MIT, fork 点见 vendor/README.md）
+vendor/m3e-canvas/node_modules/
+vendor/m3e-canvas/out/
+vendor/m3e-canvas/.next/
+public/canvas/
+.worktrees/

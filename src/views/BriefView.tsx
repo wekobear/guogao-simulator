@@ -7,6 +7,8 @@ type Props = {
   content: GameContent;
   selectedTemplateId: string | null;
   onSelectTemplate: (id: string) => void;
+  sketchSelected: boolean;
+  onSelectSketch: () => void;
   onStart: () => void;
   onBack: () => void;
 };
@@ -15,7 +17,15 @@ function statsLine(stats: Stats): string {
   return STAT_KEYS.map((key) => `${STAT_LABELS[key]} ${stats[key]}`).join('·');
 }
 
-export function BriefView({ content, selectedTemplateId, onSelectTemplate, onStart, onBack }: Props) {
+export function BriefView({
+  content,
+  selectedTemplateId,
+  onSelectTemplate,
+  sketchSelected,
+  onSelectSketch,
+  onStart,
+  onBack,
+}: Props) {
   const ref = useViewFocus<HTMLHeadingElement>();
   const brief = content.config.brief;
   return (
@@ -42,7 +52,7 @@ export function BriefView({ content, selectedTemplateId, onSelectTemplate, onSta
       <p className="brief-note">{brief.deliverableNote}</p>
 
       <section aria-label="选择起手方案">
-        <p className="section-label">起手方案（三选一）</p>
+        <p className="section-label">起手方案（三选一，或选认真模式）</p>
         <div className="templates" role="group" aria-label="起手方案">
           {content.templates.map((t) => (
             <button
@@ -60,6 +70,21 @@ export function BriefView({ content, selectedTemplateId, onSelectTemplate, onSta
               </div>
             </button>
           ))}
+          <button
+            type="button"
+            className="template-card sketch-card"
+            aria-pressed={sketchSelected}
+            onClick={onSelectSketch}
+          >
+            <span className="template-name">亲手画原型</span>
+            <div className="template-tag">认真模式 · M3E 画布</div>
+            <p className="template-desc">
+              以常规卡片为底稿：第一轮在画布上亲手拼首屏——主视觉、立即购买、手机竖屏……雕茅经理会拿需求逐条对。
+            </p>
+            <div className="template-stats">
+              <span>底稿＝常规卡片 · 原型结构计入本局指标</span>
+            </div>
+          </button>
         </div>
       </section>
 

@@ -4,6 +4,7 @@ import { ChatBubble } from '../components/ChatBubble';
 import { ResultBanner } from '../components/ResultBanner';
 import { REASON_TEXT } from '../game/scoring';
 import { ScriptReviewTextProvider } from '../services/reviewText';
+import { SKETCH_FINDING_TEXT, sketchLines } from '../content/sketchLines';
 import { useViewFocus } from './useViewFocus';
 
 const provider = new ScriptReviewTextProvider();
@@ -36,12 +37,29 @@ export function ReviewView({ run, content, onContinue }: Props) {
 
   if (!review) return null;
 
+  const sketch = run.sketch ?? null;
+  let sketchBossLine: string | null = null;
+  if (sketch) {
+    if (review.passed && review.grade === 'S') {
+      sketchBossLine =
+        sketchLines.praise[(review.score + review.round) % sketchLines.praise.length] ?? null;
+    } else {
+      const first = sketch.findings.find((f) => (sketchLines.bossLines[f] ?? []).length > 0);
+      if (first) {
+        const lines = sketchLines.bossLines[first] ?? [];
+        sketchBossLine = lines[(review.score + first.length) % lines.length] ?? null;
+      }
+    }
+  }
+
   return (
     <div className="page">
       <h1 className="view-title" ref={ref} tabIndex={-1}>
         评审结果
       </h1>
-      {lastEntry?.kind === 'preparation' ? <ResultBanner entry={lastEntry} /> : null}
+      {lastEntry && (lastEntry.kind === 'preparation' || lastEntry.kind === 'sketch') ? (
+        <ResultBanner entry={lastEntry} />
+      ) : null}
 
       <section className="card" aria-label="本局过稿指数">
         <div className="score-hero">
@@ -74,6 +92,34 @@ export function ReviewView({ run, content, onContinue }: Props) {
           {bossText ?? '雕茅经理正在看稿……'}
         </ChatBubble>
       </section>
+
+      {sketch ? (
+        <section className="card" aria-label="原型检查">
+          <p className="section-label">原型检查（对照需求逐条）</p>
+          <ul className="sketch-findings">
+            {sketch.findings.length === 0 ? (
+              <li className="ok">主视觉、立即购买、手机竖屏、页面导航、品牌配色、行为备注：逐条通过。</li>
+            ) : (
+              sketch.findings.map((f) => (
+                <li key={f} className="bad">
+                  {SKETCH_FINDING_TEXT[f]}
+                </li>
+              ))
+            )}
+          </ul>
+          {sketchBossLine ? <p className="sketch-boss">「{sketchBossLine}」</p> : null}
+          <div className="doc-card" aria-label="需求文档卡片">
+            <p className="doc-card-title">{sketchLines.docCard.title}</p>
+            <p className="doc-card-sub">{sketchLines.docCard.subtitle}</p>
+            <ul className="doc-card-list">
+              {sketch.summary.map((s) => (
+                <li key={s}>{s}</li>
+              ))}
+            </ul>
+            <p className="doc-card-footer">雕茅批注：{sketchLines.docCard.footer}</p>
+          </div>
+        </section>
+      ) : null}
 
       <button type="button" className="btn btn-primary btn-block" onClick={onContinue}>
         {review.passed ? '看看奖金' : '继续'}

@@ -7,6 +7,8 @@ import { DraftPreview } from '../components/DraftPreview';
 import { OptionCard } from '../components/OptionCard';
 import { ResultBanner } from '../components/ResultBanner';
 import { useViewFocus } from './useViewFocus';
+import { SketchCanvas } from '../components/SketchCanvas';
+import { readSketchDoc } from '../services/canvas';
 
 type Props = {
   run: Run;
@@ -15,6 +17,7 @@ type Props = {
   onImageChange: (image: PickedImage | null) => void;
   onZoomImage: () => void;
   onSubmitPrep: (prepId: string) => void;
+  onSubmitSketch: (doc: unknown) => void;
   onQuit: () => void;
   imageRestored: boolean;
 };
@@ -26,6 +29,7 @@ export function WorkspaceView({
   onImageChange,
   onZoomImage,
   onSubmitPrep,
+  onSubmitSketch,
   onQuit,
   imageRestored,
 }: Props) {
@@ -34,8 +38,11 @@ export function WorkspaceView({
   const [selected, setSelected] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
   const [imageBusy, setImageBusy] = useState(false);
+  const [showCanvas, setShowCanvas] = useState(false);
+  const [hasOpenedCanvas, setHasOpenedCanvas] = useState(false);
   const lastEntry = run.history[run.history.length - 1];
   const showBanner = run.round >= 2 && lastEntry?.kind === 'event';
+  const sketchRound = run.sketchMode === true && run.round === 1 && !run.sketch;
 
   const handleFile = async (file: File | undefined) => {
     if (!file) return;
@@ -135,9 +142,32 @@ export function WorkspaceView({
         </section>
       </div>
 
-      <section aria-label="准备动作">
-        <p className="section-label">这一轮怎么处理（单选）</p>
-        <div className="options">
+      {sketchRound ? (
+        <section className="card" aria-label="画原型">
+          <p className="section-label">认真模式：第一轮亲手画原型</p>
+          <p className="sketch-intro">
+            以常规卡片为底稿。在画布上把「石影 X1」首屏拼出来：主视觉、立即购买、手机竖屏、页面导航、行为备注——引擎会按需求逐条检查，计入本局指标。
+          </p>
+          <div className="btn-row">
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setShowCanvas(true);
+                setHasOpenedCanvas(true);
+              }}
+            >
+              {hasOpenedCanvas ? '回到画布继续画' : '打开画布画原型'}
+            </button>
+          </div>
+          <p className="brief-note" role="status">
+            {hasOpenedCanvas ? '画完收起画布，再点下方交稿。' : '先打开画布画点什么，再交稿。'}
+          </p>
+        </section>
+      ) : (
+        <section aria-label="准备动作">
+          <p className="section-label">这一轮怎么处理（单选）</p>
+          <div className="options">
           {content.preparations.map((prep) => (
             <OptionCard
               key={prep.id}
@@ -151,21 +181,32 @@ export function WorkspaceView({
           ))}
         </div>
       </section>
+      )}
 
       <button
         type="button"
         className="btn btn-primary btn-block"
-        disabled={!selected}
+        disabled={sketchRound ? !hasOpenedCanvas : !selected}
         onClick={() => {
+          if (sketchRound) {
+            onSubmitSketch(readSketchDoc());
+            return;
+          }
           if (!selected) return;
           const id = selected;
           setSelected(null);
           onSubmitPrep(id);
         }}
       >
-        提交这一稿
+        {sketchRound ? '交稿评审（原型）' : '提交这一稿'}
       </button>
-      {!selected ? (
+      {sketchRound ? (
+        hasOpenedCanvas ? null : (
+          <p className="brief-note" role="status">
+            先打开画布画点什么
+          </p>
+        )
+      ) : !selected ? (
         <p className="brief-note" role="status">
           先选一种处理方式
         </p>
@@ -173,6 +214,7 @@ export function WorkspaceView({
       <button type="button" className="btn btn-ghost" onClick={onQuit}>
         今天不干了（退出）
       </button>
+      {showCanvas ? <SketchCanvas content={content} onClose={() => setShowCanvas(false)} /> : null}
     </div>
   );
 }

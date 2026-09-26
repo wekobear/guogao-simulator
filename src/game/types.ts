@@ -1,3 +1,5 @@
+import type { SketchFindingId } from './prototype';
+
 /** 局内阶段 */
 export type Phase =
   | 'PREPARE'
@@ -43,7 +45,15 @@ export type Review = {
   text: string;
 };
 
-export type LogKind = 'preparation' | 'response' | 'event' | 'bonus' | 'party' | 'quit';
+/** 认真模式（亲手画原型）第一轮的提交结果；由 analyzeSketch 生成后冻结进存档 */
+export type SketchSummary = {
+  round: 1;
+  findings: SketchFindingId[];
+  summary: string[];
+  quality: number;
+};
+
+export type LogKind = 'preparation' | 'sketch' | 'response' | 'event' | 'bonus' | 'party' | 'quit';
 
 export type LogEntry = {
   seq: number;
@@ -84,10 +94,14 @@ export type Run = {
   bonus: Bonus | null;
   endingId: EndingId | null;
   hadCustomImage: boolean;
+  /** 认真模式标记：第一轮以画布原型交稿；旧存档无此字段视为 false */
+  sketchMode?: boolean;
+  sketch?: SketchSummary | null;
 };
 
 export type ActionType =
   | 'SUBMIT_PREP'
+  | 'SUBMIT_SKETCH'
   | 'CONFIRM_QUIT'
   | 'CONTINUE_REVIEW'
   | 'CHOOSE_RESPONSE'
@@ -101,6 +115,8 @@ export type ActionEnvelope = {
   expectedSeq: number;
   type: ActionType;
   id?: string;
+  /** 仅 SUBMIT_SKETCH：画布当前文档（形状未知，由引擎内 analyzeSketch 防御解析） */
+  sketch?: { doc: unknown };
 };
 
 export type StatsDelta = Partial<Stats>;

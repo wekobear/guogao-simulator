@@ -68,6 +68,7 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('home');
   const [run, setRun] = useState<Run | null>(null);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
+  const [sketchMode, setSketchMode] = useState(false);
   const [customImage, setCustomImage] = useState<PickedImage | null>(null);
   const [imageRestored, setImageRestored] = useState(false);
   const [modal, setModal] = useState<ModalKind>(null);
@@ -149,12 +150,17 @@ export default function App() {
   }, [reduceMotion]);
 
   const act = useCallback(
-    (type: Parameters<typeof envelope>[1], id?: string) => {
+    (
+      type: Parameters<typeof envelope>[1],
+      id?: string,
+      extra?: { sketch?: { doc: unknown } },
+    ) => {
       setRun((current) => {
         if (!current || !content || staleTab) return current;
-        const nextRun = applyAction(current, envelope(current, type, id), content);
+        const nextRun = applyAction(current, envelope(current, type, id, extra), content);
         if (nextRun === current) return current;
         if (type === 'SUBMIT_PREP') track('choice_made', { kind: 'prep', id: id ?? '' });
+        if (type === 'SUBMIT_SKETCH') track('choice_made', { kind: 'sketch' });
         if (nextRun.phase === 'REVIEW') track('review_complete', { round: nextRun.round });
         return nextRun;
       });
@@ -166,16 +172,16 @@ export default function App() {
     (templateId: string) => {
       if (!content) return;
       const seed = URL_SEED ?? randomSeed();
-      const fresh = createRun(seed, templateId, content);
+      const fresh = createRun(seed, templateId, content, { sketch: sketchMode });
       if (customImage) revokeImage(customImage.url);
       setCustomImage(null);
       setImageRestored(false);
       setRun(fresh);
       setScreen('run');
       setSavedRunExists(true);
-      track('game_start', { template: templateId, seed });
+      track('game_start', { template: templateId, seed, sketch: sketchMode ? 1 : 0 });
     },
-    [content, customImage],
+    [content, customImage, sketchMode],
   );
 
   const continueRun = useCallback(() => {
@@ -195,6 +201,7 @@ export default function App() {
     setRun(null);
     setSavedRunExists(false);
     setSelectedTemplateId(null);
+    setSketchMode(false);
     setScreen('brief');
   }, []);
 
@@ -318,7 +325,15 @@ export default function App() {
         <BriefView
           content={content}
           selectedTemplateId={selectedTemplateId}
-          onSelectTemplate={setSelectedTemplateId}
+          sketchSelected={sketchMode && selectedTemplateId === 'classic'}
+          onSelectTemplate={(id) => {
+            setSelectedTemplateId(id);
+            setSketchMode(false);
+          }}
+          onSelectSketch={() => {
+            setSelectedTemplateId('classic');
+            setSketchMode(true);
+          }}
           onStart={() => selectedTemplateId && startRun(selectedTemplateId)}
           onBack={goHome}
         />
@@ -334,6 +349,7 @@ export default function App() {
               onImageChange={handleImageChange}
               onZoomImage={() => setModal('image')}
               onSubmitPrep={(id) => act('SUBMIT_PREP', id)}
+              onSubmitSketch={(doc) => act('SUBMIT_SKETCH', 'sketch', { sketch: { doc } })}
               onQuit={() => setModal('quit')}
               imageRestored={imageRestored}
             />

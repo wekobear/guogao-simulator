@@ -6,7 +6,8 @@
   "description": "过稿模拟器——短局职场讽刺网页游戏（纯前端，无后端）",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node tools/build-canvas.mjs && vite build",
+    "build:canvas": "node tools/build-canvas.mjs --force",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

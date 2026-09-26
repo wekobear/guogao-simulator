@@ -1,4 +1,5 @@
 import { applyDelta, makeReview } from './scoring';
+import { analyzeSketch } from './prototype';
 import { drawU, pickEvent } from './random';
 import type {
   ActionEnvelope,
@@ -29,7 +30,12 @@ function reject(run: Run, message: string): Run {
   return run;
 }
 
-export function createRun(seed: number, templateId: string, content: GameContent): Run {
+export function createRun(
+  seed: number,
+  templateId: string,
+  content: GameContent,
+  opts?: { sketch?: boolean },
+): Run {
   const template = content.templates.find((t) => t.id === templateId);
   if (!template) {
     throw new Error(`未知起手模板：${templateId}`);
@@ -55,6 +61,8 @@ export function createRun(seed: number, templateId: string, content: GameContent
     bonus: null,
     endingId: null,
     hadCustomImage: false,
+    sketchMode: opts?.sketch === true,
+    sketch: null,
   };
 }
 
@@ -107,6 +115,41 @@ export function applyAction(run: Run, env: ActionEnvelope, content: GameContent)
         // 精力耗尽：直接 BURNOUT，不生成新评审、不增加 submittedCount
         return endRun(base, 'BURNOUT', next);
       }
+      const review = makeReview(run.round, after, content.config, content.reviews);
+      return {
+        ...base,
+        submittedCount: run.submittedCount + 1,
+        review,
+        reviews: [...run.reviews, review],
+        phase: 'REVIEW',
+      };
+    }
+
+    case 'SUBMIT_SKETCH': {
+      if (run.phase !== 'PREPARE') return reject(run, '阶段不符');
+      if (!run.sketchMode || run.sketch) return reject(run, '本单不需要原型交稿');
+      const doc = env.sketch?.doc;
+      if (doc === undefined || doc === null) return reject(run, '缺少原型数据');
+      const analysis = analyzeSketch(doc);
+      const before = run.stats;
+      const after = applyDelta(before, analysis.statsDelta);
+      const resultText = `你交上了亲手拼的原型（结构完整度 ${analysis.quality}/100）${
+        analysis.summary.length > 0 ? `：${analysis.summary.slice(0, 2).join('；')}` : ''
+      }。`;
+      const entry = log(run, 'sketch', 'sketch', before, after, resultText, next);
+      const base: Run = {
+        ...run,
+        seq: next,
+        stats: after,
+        history: [...run.history, entry],
+        sketch: {
+          round: 1,
+          findings: analysis.findings,
+          summary: analysis.summary,
+          quality: analysis.quality,
+        },
+      };
+      if (after.energy <= 0) return endRun(base, 'BURNOUT', next);
       const review = makeReview(run.round, after, content.config, content.reviews);
       return {
         ...base,
@@ -288,6 +331,17 @@ export function applyAction(run: Run, env: ActionEnvelope, content: GameContent)
 }
 
 /** UI 辅助：构造带当前 seq 的动作信封 */
-export function envelope(run: Run, type: ActionEnvelope['type'], id?: string): ActionEnvelope {
-  return { runId: run.runId, expectedSeq: run.seq, type, ...(id ? { id } : {}) };
+export function envelope(
+  run: Run,
+  type: ActionEnvelope['type'],
+  id?: string,
+  extra?: { sketch?: { doc: unknown } },
+): ActionEnvelope {
+  return {
+    runId: run.runId,
+    expectedSeq: run.seq,
+    type,
+    ...(id ? { id } : {}),
+    ...(extra?.sketch ? { sketch: extra.sketch } : {}),
+  };
 }

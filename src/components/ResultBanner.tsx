@@ -3,6 +3,7 @@ import { formatChanges, previewChange } from '../game/selectors';
 
 const KIND_LABEL: Record<string, string> = {
   preparation: '准备',
+  sketch: '原型交稿',
   response: '回应',
   event: '插曲',
   bonus: '奖金',

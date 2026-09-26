@@ -1,12 +1,11 @@
 # Netlify 构建配置（与 GitHub 仓库绑定后生效）
 [build]
-  command = "corepack enable && pnpm install --no-frozen-lockfile && pnpm build"
+  command = "pnpm install --no-frozen-lockfile && pnpm build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "24"
   # vendor/m3e-canvas 用 npm（package-lock.json），CI 内由 tools/build-canvas.mjs 自行 npm ci
-  NPM_FLAGS = "--legacy-peer-deps"
 
 [[headers]]
   for = "/canvas/*"

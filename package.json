@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "packageManager": "pnpm@12.6.0",
   "description": "过稿模拟器——短局职场讽刺网页游戏（纯前端，无后端）",
   "scripts": {
     "dev": "vite",

@@ -40,6 +40,13 @@ pnpm dev          # 开发：http://localhost:5173
 
 线上地址：<https://guogao-simulator.netlify.app>（Netlify，`main` 推送自动构建）。
 
+### 移动端适配（v0.2.1）
+
+- 面向 320–430px 手机竖屏与 768px 平板做了全页面适配：回应横幅正文与指标在窄屏上下排列；小节标题与内容保持间距；选项/模板卡显式浅色文字（修复按钮默认黑字贴深底）；指标行数值列按内容取宽，不再横向溢出；页面在各档宽度均无横向滚动。
+- 像素办公室画布等比缩放并提供方向/交互触屏按钮；拼装编辑器在窄屏为上下单列结构；超窄屏下评审台词与印章改为画布下方常规排布，避免遮挡。桌面 ≥1024px 双栏布局不受影响。
+- 回归测试：`pnpm exec playwright test -c playwright.mobile.config.ts mobile.spec.ts`（需先 `pnpm build` 并有本地 preview 服务，默认连 `http://localhost:5188`，可用 `E2E_BASE_URL` 覆盖）。
+- 统一顶栏：首页与局内共用一条顶栏（左品牌入口 + 右「玩法说明 / 结局图鉴 / 设置」图标按钮，≥480px 图标加短标签，更窄仅图标、aria-label 保底；触摸目标 ≥44px）。图标取自 [Reicon](https://github.com/dqev/reicon)（MIT）的 `help-circle` / `gallery` / `settings`，本地最小包装于 `src/components/icons.tsx`，归属见 `THIRD_PARTY_NOTICES.md`。
+
 ### 认真模式（画原型）说明
 
 - 画布来自 [m3e-canvas](https://github.com/lnkiai/m3e-canvas)（MIT），vendored 于 `vendor/m3e-canvas`，`pnpm build:canvas` 以 `/canvas` 为基路径静态构建并拷入 `public/canvas/`（已存在则跳过，`--force` 重建）。

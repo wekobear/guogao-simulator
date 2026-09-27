@@ -89,6 +89,8 @@ button {
   outline: none;
   color: var(--ink);
   text-shadow: 2px 2px 0 rgba(8, 6, 14, 0.8);
+  /* 窄屏长标题（如「职场插曲 · …」）均衡断行，避免最后一行只剩一个字的孤字 */
+  text-wrap: balance;
 }
 
 .view-sub {
@@ -102,7 +104,8 @@ button {
   font-weight: 600;
   color: var(--ink-soft);
   letter-spacing: 0.14em;
-  margin: 6px 0 -4px;
+  /* 标题与下方内容保持清楚间距：负边距会让「你怎么办」这类标题紧贴选项列表 */
+  margin: 6px 0 8px;
 }
 
 .card {
@@ -210,7 +213,8 @@ button {
 }
 
 .home-title {
-  font-size: 52px;
+  /* 320px 窄屏放不下 5×52px 字距标题，按视口收缩，桌面保持原大字 */
+  font-size: clamp(38px, 13vw, 52px);
   font-weight: 800;
   letter-spacing: 0.1em;
   margin: 0;
@@ -258,8 +262,15 @@ button {
 .home-rules {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.home-rules .chip {
+  font-size: 11px;
+  padding: 3px 8px;
+  gap: 4px;
+  white-space: nowrap;
 }
 
 .chip {
@@ -335,6 +346,8 @@ button {
   cursor: pointer;
   transition: border-color 140ms ease, box-shadow 140ms ease;
   font: inherit;
+  /* button 不继承正文颜色（UA 默认近黑），深色卡上必须显式给浅色 */
+  color: var(--ink);
 }
 
 .template-card[aria-pressed='true'] {
@@ -378,7 +391,8 @@ button {
 
 .stat-row {
   display: grid;
-  grid-template-columns: 88px 1fr 78px;
+  /* 值列按内容取宽：固定 78px 装不下「3 点｜每点扣 5 分」，窄屏会横向溢出 */
+  grid-template-columns: 5.5em minmax(0, 1fr) max-content;
   align-items: center;
   gap: 8px;
   font-size: 13.5px;
@@ -791,6 +805,8 @@ button {
   padding: 12px 14px;
   cursor: pointer;
   font: inherit;
+  /* 同 template-card：显式浅色文字，避免 UA 按钮默认黑字贴深色底 */
+  color: var(--ink);
   transition: border-color 140ms ease, box-shadow 140ms ease;
   display: grid;
   gap: 4px;
@@ -805,18 +821,21 @@ button {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
+  /* 窄屏标题与数值变化放不下一行时换行到下一行，而不是把布局撑出屏幕 */
+  flex-wrap: wrap;
+  gap: 2px 10px;
 }
 
 .option-name {
   font-weight: 700;
   font-size: 15.5px;
+  min-width: 0;
 }
 
 .option-preview {
   font-size: 13px;
   color: var(--ink-soft);
-  white-space: nowrap;
+  min-width: 0;
 }
 
 .option-preview .neg {
@@ -1131,7 +1150,8 @@ details.full-record summary {
 
 .result-banner {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px 12px;
   align-items: flex-start;
   background: var(--card-deep);
   border: 2px solid var(--line-strong);
@@ -1143,15 +1163,29 @@ details.full-record summary {
 }
 
 .result-banner .rb-text {
-  flex: 1;
+  flex: 1 1 15em;
+  min-width: 0;
 }
 
 .result-banner .rb-delta {
-  flex: none;
+  flex: 0 1 auto;
+  max-width: 100%;
   font-size: 12.5px;
   color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
   text-align: right;
+}
+
+/* 窄屏：回应正文与数值变化上下排列，指标不再把正文挤成窄列 */
+@media (max-width: 480px) {
+  .result-banner .rb-text,
+  .result-banner .rb-delta {
+    flex-basis: 100%;
+  }
+
+  .result-banner .rb-delta {
+    text-align: left;
+  }
 }
 
 .notice {
@@ -1339,16 +1373,51 @@ details.full-record summary {
 
 .topbar-actions {
   display: flex;
-  gap: 4px;
+  gap: 2px;
 }
 
-.topbar .btn {
-  min-height: 36px;
-  font-size: 13px;
-  padding: 4px 10px;
-  border-color: transparent;
+/* 图标工具按钮：≥480px 显示图标+短标签，更窄时仅图标（aria-label 保底） */
+.topbar-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 6px;
+  border: none;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 140ms ease, background 140ms ease;
+}
+
+.topbar-tool:hover {
+  color: var(--ink);
+  background: var(--card-deep);
+}
+
+.topbar-tool svg {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+
+.topbar-tool-label {
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .topbar-tool {
+    padding: 0 10px;
+  }
+
+  .topbar-tool-label {
+    display: inline;
+  }
 }
 
 /* ---------- 印章组件 ---------- */
@@ -1823,8 +1892,8 @@ details.full-record summary {
   align-items: center;
 }
 .asm-swatch {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 4px;
   border: 2px solid #545d6e;
   cursor: pointer;
@@ -1941,8 +2010,8 @@ details.full-record summary {
   gap: 4px;
 }
 .asm-tool {
-  min-width: 30px;
-  min-height: 30px;
+  min-width: 32px;
+  min-height: 32px;
   border-radius: 4px;
   border: 1.5px solid #545d6e;
   background: #13141a;
@@ -2250,6 +2319,10 @@ details.full-record summary {
   max-width: 960px;
   width: 100%;
   margin: 0 auto;
+  /* 印章 boss-stamp 入场 scale(2.2) 是纯装饰变换，绘制限制在舞台画布内，
+     不撑大页面 scrollWidth；落定态印章与台词气泡均在容器内，不受裁切 */
+  overflow: hidden;
+  overflow: clip;
 }
 .boss-verdict {
   position: absolute;
@@ -2312,5 +2385,17 @@ details.full-record summary {
     top: auto;
     bottom: 12px;
     right: 14px;
+  }
+}
+/* 超窄屏（≤380px）：画布高度装不下多行台词的悬浮层，改为画布下方常规排布，不遮挡指标卡 */
+@media (max-width: 380px) {
+  .boss-verdict {
+    position: static;
+    margin: 10px auto 0;
+  }
+  .boss-bubble {
+    position: static;
+    max-width: 100%;
+    margin-top: 8px;
   }
 }

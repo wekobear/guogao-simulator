@@ -8,23 +8,10 @@ type Props = {
   reduceMotion: boolean;
   onNew: () => void;
   onContinue: () => void;
-  onHowTo: () => void;
-  onCollection: () => void;
-  onSettings: () => void;
   storageWarning: string | null;
 };
 
-export function HomeView({
-  content,
-  hasContinue,
-  reduceMotion,
-  onNew,
-  onContinue,
-  onHowTo,
-  onCollection,
-  onSettings,
-  storageWarning,
-}: Props) {
+export function HomeView({ content, hasContinue, reduceMotion, onNew, onContinue, storageWarning }: Props) {
   const ref = useViewFocus<HTMLHeadingElement>();
   return (
     <div className="page home home-stage">
@@ -59,17 +46,6 @@ export function HomeView({
         >
           新开一单
         </button>
-        <div className="btn-row">
-          <button type="button" className="btn" onClick={onHowTo}>
-            玩法说明
-          </button>
-          <button type="button" className="btn" onClick={onCollection}>
-            结局图鉴
-          </button>
-          <button type="button" className="btn" onClick={onSettings}>
-            设置
-          </button>
-        </div>
       </div>
       {storageWarning ? <div className="notice warn">{storageWarning}</div> : null}
       <p className="home-foot">

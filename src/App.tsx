@@ -24,6 +24,7 @@ import {
   SettingsModal,
   StaleTabNotice,
 } from './components/modals';
+import { TopBar } from './components/TopBar';
 
 type Screen = 'home' | 'brief' | 'run';
 type ModalKind =
@@ -285,20 +286,13 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      {screen === 'run' && run ? (
-        <header className="topbar">
-          <button type="button" className="brand" onClick={goHome} aria-label="回首页（保留当前进度）">
-            过稿模拟器
-          </button>
-          <div className="topbar-actions">
-            <button type="button" className="btn" onClick={() => setModal('howto')}>
-              玩法
-            </button>
-            <button type="button" className="btn" onClick={() => setModal('collection')}>
-              图鉴
-            </button>
-          </div>
-        </header>
+      {screen === 'home' || (screen === 'run' && run) ? (
+        <TopBar
+          onHome={screen === 'home' ? null : goHome}
+          onHowTo={() => setModal('howto')}
+          onCollection={() => setModal('collection')}
+          onSettings={() => setModal('settings')}
+        />
       ) : null}
 
       {staleTab && screen === 'run' ? (
@@ -315,9 +309,6 @@ export default function App() {
             setScreen('brief');
           }}
           onContinue={continueRun}
-          onHowTo={() => setModal('howto')}
-          onCollection={() => setModal('collection')}
-          onSettings={() => setModal('settings')}
           storageWarning={storageWarning}
         />
       ) : null}

@@ -7,8 +7,7 @@ import { DraftPreview } from '../components/DraftPreview';
 import { OptionCard } from '../components/OptionCard';
 import { ResultBanner } from '../components/ResultBanner';
 import { useViewFocus } from './useViewFocus';
-import { SketchCanvas } from '../components/SketchCanvas';
-import { readSketchDoc } from '../services/canvas';
+import { OfficeView } from './OfficeView';
 
 type Props = {
   run: Run;
@@ -20,6 +19,7 @@ type Props = {
   onSubmitSketch: (doc: unknown) => void;
   onQuit: () => void;
   imageRestored: boolean;
+  reduceMotion: boolean;
 };
 
 export function WorkspaceView({
@@ -32,17 +32,29 @@ export function WorkspaceView({
   onSubmitSketch,
   onQuit,
   imageRestored,
+  reduceMotion,
 }: Props) {
   const ref = useViewFocus<HTMLHeadingElement>();
   const fileRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
   const [imageBusy, setImageBusy] = useState(false);
-  const [showCanvas, setShowCanvas] = useState(false);
-  const [hasOpenedCanvas, setHasOpenedCanvas] = useState(false);
   const lastEntry = run.history[run.history.length - 1];
   const showBanner = run.round >= 2 && lastEntry?.kind === 'event';
   const sketchRound = run.sketchMode === true && run.round === 1 && !run.sketch;
+
+  // 认真模式第一轮：2.5D 办公室（移动/交互/拼装/交稿），替代旧画布面板
+  if (sketchRound) {
+    return (
+      <OfficeView
+        run={run}
+        content={content}
+        reduceMotion={reduceMotion}
+        onSubmitSketch={onSubmitSketch}
+        onQuit={onQuit}
+      />
+    );
+  }
 
   const handleFile = async (file: File | undefined) => {
     if (!file) return;
@@ -142,32 +154,9 @@ export function WorkspaceView({
         </section>
       </div>
 
-      {sketchRound ? (
-        <section className="card" aria-label="画原型">
-          <p className="section-label">认真模式：第一轮亲手画原型</p>
-          <p className="sketch-intro">
-            以常规卡片为底稿。在画布上把「石影 X1」首屏拼出来：主视觉、立即购买、手机竖屏、页面导航、行为备注——引擎会按需求逐条检查，计入本局指标。
-          </p>
-          <div className="btn-row">
-            <button
-              type="button"
-              className="btn"
-              onClick={() => {
-                setShowCanvas(true);
-                setHasOpenedCanvas(true);
-              }}
-            >
-              {hasOpenedCanvas ? '回到画布继续画' : '打开画布画原型'}
-            </button>
-          </div>
-          <p className="brief-note" role="status">
-            {hasOpenedCanvas ? '画完收起画布，再点下方交稿。' : '先打开画布画点什么，再交稿。'}
-          </p>
-        </section>
-      ) : (
-        <section aria-label="准备动作">
-          <p className="section-label">这一轮怎么处理（单选）</p>
-          <div className="options">
+      <section aria-label="准备动作">
+        <p className="section-label">这一轮怎么处理（单选）</p>
+        <div className="options">
           {content.preparations.map((prep) => (
             <OptionCard
               key={prep.id}
@@ -181,32 +170,21 @@ export function WorkspaceView({
           ))}
         </div>
       </section>
-      )}
 
       <button
         type="button"
         className="btn btn-primary btn-block"
-        disabled={sketchRound ? !hasOpenedCanvas : !selected}
+        disabled={!selected}
         onClick={() => {
-          if (sketchRound) {
-            onSubmitSketch(readSketchDoc());
-            return;
-          }
           if (!selected) return;
           const id = selected;
           setSelected(null);
           onSubmitPrep(id);
         }}
       >
-        {sketchRound ? '交稿评审（原型）' : '提交这一稿'}
+        提交这一稿
       </button>
-      {sketchRound ? (
-        hasOpenedCanvas ? null : (
-          <p className="brief-note" role="status">
-            先打开画布画点什么
-          </p>
-        )
-      ) : !selected ? (
+      {!selected ? (
         <p className="brief-note" role="status">
           先选一种处理方式
         </p>
@@ -214,7 +192,6 @@ export function WorkspaceView({
       <button type="button" className="btn btn-ghost" onClick={onQuit}>
         今天不干了（退出）
       </button>
-      {showCanvas ? <SketchCanvas content={content} onClose={() => setShowCanvas(false)} /> : null}
     </div>
   );
 }

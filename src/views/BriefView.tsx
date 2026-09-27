@@ -52,8 +52,23 @@ export function BriefView({
       <p className="brief-note">{brief.deliverableNote}</p>
 
       <section aria-label="选择起手方案">
-        <p className="section-label">起手方案（三选一，或选认真模式）</p>
+        <p className="section-label">起手方案（新手推荐拼装模式，或三选一经典模板）</p>
         <div className="templates" role="group" aria-label="起手方案">
+          <button
+            type="button"
+            className="template-card sketch-card"
+            aria-pressed={sketchSelected}
+            onClick={onSelectSketch}
+          >
+            <span className="template-name">进办公室拼页面</span>
+            <div className="template-tag">认真模式 · 新手推荐</div>
+            <p className="template-desc">
+              在 2.5D 像素办公室里走动：工位上把落地页拼出来（主视觉、立即购买、手机竖屏、导航、备注、品牌色），走到经理室交稿，雕茅经理逐条对需求。
+            </p>
+            <div className="template-stats">
+              <span>底稿＝常规卡片 · 原型结构计入本局指标 · 随时可换 M3E 高级画布</span>
+            </div>
+          </button>
           {content.templates.map((t) => (
             <button
               key={t.id}
@@ -70,21 +85,6 @@ export function BriefView({
               </div>
             </button>
           ))}
-          <button
-            type="button"
-            className="template-card sketch-card"
-            aria-pressed={sketchSelected}
-            onClick={onSelectSketch}
-          >
-            <span className="template-name">亲手画原型</span>
-            <div className="template-tag">认真模式 · M3E 画布</div>
-            <p className="template-desc">
-              以常规卡片为底稿：第一轮在画布上亲手拼首屏——主视觉、立即购买、手机竖屏……雕茅经理会拿需求逐条对。
-            </p>
-            <div className="template-stats">
-              <span>底稿＝常规卡片 · 原型结构计入本局指标</span>
-            </div>
-          </button>
         </div>
       </section>
 

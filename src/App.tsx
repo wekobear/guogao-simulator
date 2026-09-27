@@ -309,6 +309,7 @@ export default function App() {
         <HomeView
           content={content}
           hasContinue={savedRunExists}
+          reduceMotion={reduceMotion}
           onNew={() => {
             setSelectedTemplateId(null);
             setScreen('brief');
@@ -352,10 +353,16 @@ export default function App() {
               onSubmitSketch={(doc) => act('SUBMIT_SKETCH', 'sketch', { sketch: { doc } })}
               onQuit={() => setModal('quit')}
               imageRestored={imageRestored}
+              reduceMotion={reduceMotion}
             />
           ) : null}
           {run.phase === 'REVIEW' ? (
-            <ReviewView run={run} content={content} onContinue={() => act('CONTINUE_REVIEW')} />
+            <ReviewView
+              run={run}
+              content={content}
+              reduceMotion={reduceMotion}
+              onContinue={() => act('CONTINUE_REVIEW')}
+            />
           ) : null}
           {run.phase === 'RESPOND' ? (
             <RespondView

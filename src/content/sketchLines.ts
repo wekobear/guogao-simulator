@@ -22,6 +22,10 @@ export type SketchLines = {
   findingText: Record<SketchFindingId, string>;
   bossLines: Record<SketchFindingId, string[]>;
   praise: string[];
+  /** 逐条检查全过、但本局综合指数没到过稿线的台词（结构完整 ≠ 综合过稿） */
+  allPassLowScore: string[];
+  /** 逐条全过且综合压线过稿的勉强认可 */
+  allPassJustPassed: string[];
   docCard: { title: string; subtitle: string; footer: string };
 };
 
@@ -78,6 +82,15 @@ export const sketchLines: SketchLines = {
     '这版总算勉强能看了，主要还是我当初「要高级也要热闹」的战略定调给得精准。',
     '行吧，石影X1的主视觉立住了；要不是我替你把关两步转化，你早做出自嗨产品了。',
     '有点那味了，多亏我之前多次说「感觉很奇怪」启发你，汇报时我会提一嘴你的执行。',
+  ],
+  allPassLowScore: [
+    '东西倒是齐了……齐得让我一时挑不出毛病。但结构完整是及格线，不是过稿线——这一局的综合过稿指数还没到我点头的地方。',
+    '主视觉、购买按钮、手机竖屏，逐条对下来都在。可我最近对你的信任欠账和你的沟通凭证都记在账上，综合指数不够，我不能只看页面下结论。',
+    '我很想毙了它，可逐条竟然都能对上。行，东西齐了，但我还没准备好认可——综合过稿指数再涨两分，我们再谈过不过。',
+  ],
+  allPassJustPassed: [
+    '逐条都能对上，综合指数也刚好压线。勉强算你过关——主要还是我需求给得清楚，你只是执行到位。',
+    '结构齐了，指数也够着了。这次先放行，别得意，下次我要看到不用我盯也能到的水平。',
   ],
   docCard: {
     title: '石影X1原型规范',

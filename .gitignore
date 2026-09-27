@@ -17,3 +17,6 @@ public/canvas/
 
 # Local Netlify folder
 .netlify
+
+# Local visual acceptance artifacts
+/output/

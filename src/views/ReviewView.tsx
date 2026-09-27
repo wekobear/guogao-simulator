@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { GameContent, Run } from '../game/types';
 import { ChatBubble } from '../components/ChatBubble';
 import { ResultBanner } from '../components/ResultBanner';
@@ -6,20 +6,37 @@ import { REASON_TEXT } from '../game/scoring';
 import { ScriptReviewTextProvider } from '../services/reviewText';
 import { SKETCH_FINDING_TEXT, sketchLines } from '../content/sketchLines';
 import { useViewFocus } from './useViewFocus';
+import { OfficeStage, type StageState } from '../components/office/OfficeStage';
+import { burstVerdictParticles } from '../components/office/sceneDraw';
 
 const provider = new ScriptReviewTextProvider();
 
 type Props = {
   run: Run;
   content: GameContent;
+  reduceMotion: boolean;
   onContinue: () => void;
 };
 
-export function ReviewView({ run, content, onContinue }: Props) {
+export function ReviewView({ run, content, reduceMotion, onContinue }: Props) {
   const ref = useViewFocus<HTMLHeadingElement>();
   const [bossText, setBossText] = useState<string | null>(null);
   const review = run.review;
   const lastEntry = run.history[run.history.length - 1];
+  const sketch = run.sketch ?? null;
+
+  // 像素对峙舞台状态：玩家台阶下仰角举稿，经理按结果俯视
+  const stageRef = useRef<StageState>({
+    playerX: 770,
+    playerDir: 1,
+    playerPose: 'submit',
+    bossMood: review?.passed ? 'pleased' : 'angry',
+    bossVisible: true,
+    fx: { verdictFx: review?.passed ? 1 : 2, dimLamps: true },
+  });
+  useEffect(() => {
+    if (!reduceMotion) burstVerdictParticles(review?.passed ? 'gold' : 'confetti');
+  }, [review?.passed, reduceMotion]);
 
   useEffect(() => {
     if (!review) return;
@@ -37,18 +54,26 @@ export function ReviewView({ run, content, onContinue }: Props) {
 
   if (!review) return null;
 
-  const sketch = run.sketch ?? null;
+  // 认真模式台词必须与真实 findings 一致：有缺项 → 按缺项挑台词；
+  // 逐条全过但综合分不够 → 「东西齐了，但我还没准备好认可」，
+  // 说明结构完整度与综合过稿指数的差别，不虚构缺件，也不改评分。
   let sketchBossLine: string | null = null;
   if (sketch) {
-    if (review.passed && review.grade === 'S') {
-      sketchBossLine =
-        sketchLines.praise[(review.score + review.round) % sketchLines.praise.length] ?? null;
-    } else {
+    if (sketch.findings.length > 0) {
       const first = sketch.findings.find((f) => (sketchLines.bossLines[f] ?? []).length > 0);
       if (first) {
         const lines = sketchLines.bossLines[first] ?? [];
         sketchBossLine = lines[(review.score + first.length) % lines.length] ?? null;
       }
+    } else if (review.passed && review.grade === 'S') {
+      sketchBossLine =
+        sketchLines.praise[(review.score + review.round) % sketchLines.praise.length] ?? null;
+    } else if (review.passed) {
+      const lines = sketchLines.allPassJustPassed;
+      sketchBossLine = lines[review.round % lines.length] ?? null;
+    } else {
+      const lines = sketchLines.allPassLowScore;
+      sketchBossLine = lines[(review.score + review.round) % lines.length] ?? null;
     }
   }
 
@@ -59,6 +84,18 @@ export function ReviewView({ run, content, onContinue }: Props) {
       </h1>
       {lastEntry && (lastEntry.kind === 'preparation' || lastEntry.kind === 'sketch') ? (
         <ResultBanner entry={lastEntry} />
+      ) : null}
+
+      {sketch ? (
+        <div className="boss-stage-wrap">
+          <OfficeStage mode="boss" reduceMotion={reduceMotion} stateRef={stageRef} />
+          <div className={`boss-verdict ${review.passed ? 'pass' : 'fail'}`} aria-hidden="true">
+            {review.passed ? `过稿 ${review.grade}` : 'REJECTED'}
+          </div>
+          <div className="boss-bubble" role="status">
+            「{sketchBossLine ?? (review.passed ? '行吧，先发给运营看看。' : '重做。')}」
+          </div>
+        </div>
       ) : null}
 
       <section className="card" aria-label="本局过稿指数">
@@ -89,7 +126,10 @@ export function ReviewView({ run, content, onContinue }: Props) {
 
       <section className="chat" aria-label="老板反馈">
         <ChatBubble actor="boss" content={content}>
-          {bossText ?? '雕茅经理正在看稿……'}
+          {/* 认真模式：台词与逐条检查同源，避免「检查全过却说缺产品图」的矛盾 */}
+          {sketch
+            ? (sketchBossLine ?? (review.passed ? '行吧，先发给运营看看。' : '重做。'))
+            : (bossText ?? '雕茅经理正在看稿……')}
         </ChatBubble>
       </section>
 

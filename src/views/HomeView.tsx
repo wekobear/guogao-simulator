@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
 import type { GameContent } from '../game/types';
 import { useViewFocus } from './useViewFocus';
-import heroUrl from '../assets/hero.svg';
+import { OfficeStage } from '../components/office/OfficeStage';
 
 type Props = {
   content: GameContent;
   hasContinue: boolean;
+  reduceMotion: boolean;
   onNew: () => void;
   onContinue: () => void;
   onHowTo: () => void;
@@ -17,6 +17,7 @@ type Props = {
 export function HomeView({
   content,
   hasContinue,
+  reduceMotion,
   onNew,
   onContinue,
   onHowTo,
@@ -25,24 +26,21 @@ export function HomeView({
   storageWarning,
 }: Props) {
   const ref = useViewFocus<HTMLHeadingElement>();
-  const heroRef = useRef<HTMLImageElement>(null);
-  useEffect(() => {
-    // 装饰插画加载失败（资源缺失）时直接隐藏，不显示破图
-    const img = heroRef.current;
-    if (!img) return;
-    const hide = () => img.remove();
-    img.addEventListener('error', hide);
-    return () => img.removeEventListener('error', hide);
-  }, []);
   return (
-    <div className="page home">
-      <div>
+    <div className="page home home-stage">
+      <div className="home-heading">
         <h1 className="home-title" ref={ref} tabIndex={-1}>
           过稿模拟器
         </h1>
+        <p className="home-chapter">差不多创意部 · 傍晚 · 周四 18:47</p>
         <p className="home-tagline">稿子可以再改，今天还想准点走。</p>
       </div>
-      <img ref={heroRef} className="home-hero" src={heroUrl} alt="" aria-hidden="true" />
+      <div className="home-stage-wrap">
+        <OfficeStage mode="title" reduceMotion={reduceMotion} className="office-canvas home-canvas" />
+        <p className="home-stage-cap" aria-hidden="true">
+          差不多创意部 · 赶在日落前把稿子再过一遍
+        </p>
+      </div>
       <div className="home-rules">
         <span className="chip">最多提交三次</span>
         <span className="chip">选择影响过稿与结局</span>

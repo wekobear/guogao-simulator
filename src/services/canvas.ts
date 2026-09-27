@@ -48,7 +48,7 @@ type SeedDoc = {
 };
 
 /** 起手原型：桌面首页 + 手机竖屏双屏、品牌橙、两条提示部件 */
-function buildSeedDoc(requirementLines: string[]): SeedDoc {
+export function buildSeedDoc(requirementLines: string[]): SeedDoc {
   return {
     title: '石影 X1 上新落地页',
     brief: requirementLines.join(' '),
@@ -91,15 +91,6 @@ function buildSeedDoc(requirementLines: string[]): SeedDoc {
       },
     ],
   };
-}
-
-/** 在 iframe 挂载前写入种子文档（同源共享 localStorage）；写入失败时画布以空文档起手 */
-export function seedSketchCanvas(requirementLines: string[]): void {
-  try {
-    localStorage.setItem(CANVAS_DOC_KEY, JSON.stringify(buildSeedDoc(requirementLines)));
-  } catch {
-    // 隐私模式等场景：忽略，玩家仍可画
-  }
 }
 
 /** 读取画布当前文档；无文档或无法解析时返回 null */

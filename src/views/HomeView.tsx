@@ -1,6 +1,5 @@
 import type { GameContent } from '../game/types';
 import { useViewFocus } from './useViewFocus';
-import { OfficeStage } from '../components/office/OfficeStage';
 
 type Props = {
   content: GameContent;
@@ -11,22 +10,21 @@ type Props = {
   storageWarning: string | null;
 };
 
-export function HomeView({ content, hasContinue, reduceMotion, onNew, onContinue, storageWarning }: Props) {
+/**
+ * 首页（v0.3.0）：全屏办公室场景直接做背景（全局 OfficeBackdrop，title 模式
+ * 带缓慢漂移与走道踱步），本视图只叠左/中层级 logo、极短开场文案与行动按钮，
+ * 不再出现独立小场景卡片，也没有大片黑空白。
+ */
+export function HomeView({ content, hasContinue, onNew, onContinue, storageWarning }: Props) {
   const ref = useViewFocus<HTMLHeadingElement>();
   return (
-    <div className="page home home-stage">
+    <div className="page home-full">
       <div className="home-heading">
         <h1 className="home-title" ref={ref} tabIndex={-1}>
           过稿模拟器
         </h1>
         <p className="home-chapter">差不多创意部 · 傍晚 · 周四 18:47</p>
         <p className="home-tagline">稿子可以再改，今天还想准点走。</p>
-      </div>
-      <div className="home-stage-wrap">
-        <OfficeStage mode="title" reduceMotion={reduceMotion} className="office-canvas home-canvas" />
-        <p className="home-stage-cap" aria-hidden="true">
-          差不多创意部 · 赶在日落前把稿子再过一遍
-        </p>
       </div>
       <div className="home-rules">
         <span className="chip">最多提交三次</span>

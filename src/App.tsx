@@ -24,7 +24,8 @@ import {
   SettingsModal,
   StaleTabNotice,
 } from './components/modals';
-import { TopBar } from './components/TopBar';
+import { GameHud } from './components/GameHud';
+import { OfficeBackdrop, type BackdropMode } from './components/office/OfficeBackdrop';
 
 type Screen = 'home' | 'brief' | 'run';
 type ModalKind =
@@ -266,35 +267,94 @@ export default function App() {
 
   if (contentError) {
     return (
-      <div className="page" style={{ alignItems: 'center', paddingTop: 80 }}>
-        <h1 className="view-title">内容加载失败</h1>
-        <p className="view-sub">{contentError}</p>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => {
-            setContentError(null);
-            initContent();
-          }}
-        >
-          重试
-        </button>
+      <div className="game-shell">
+        <div className="game-main center">
+          <div className="page panel">
+            <h1 className="view-title">内容加载失败</h1>
+            <p className="view-sub">{contentError}</p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                setContentError(null);
+                initContent();
+              }}
+            >
+              重试
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
   if (!content) return null;
 
-  return (
-    <div className="app-shell">
-      {screen === 'home' || (screen === 'run' && run) ? (
-        <TopBar
-          onHome={screen === 'home' ? null : goHome}
-          onHowTo={() => setModal('howto')}
-          onCollection={() => setModal('collection')}
-          onSettings={() => setModal('settings')}
-        />
-      ) : null}
+  // ---- 全屏场景背景模式与 HUD 文案（v0.3.0 GameShell） ----
+  const sketchRound = run?.sketchMode === true && run.round === 1 && !run.sketch;
+  let bgMode: BackdropMode | null = 'title';
+  let bgDim = 0.45;
+  let taskText = '差不多创意部 · 傍晚 · 赶在日落前';
+  if (screen === 'brief') {
+    taskText = '读需求，选起手方案';
+  } else if (screen === 'run' && run) {
+    switch (run.phase) {
+      case 'PREPARE':
+        // 认真模式第一轮已有 OfficeStage 全屏舞台：不再在底下另画一套背景和人物
+        bgMode = sketchRound ? null : 'office';
+        bgDim = 0.55;
+        taskText = sketchRound ? '在办公室拼一版能过稿的落地页' : '工作台 · 这一轮怎么处理';
+        break;
+      case 'REVIEW':
+        bgMode = 'boss';
+        bgDim = 0.4;
+        taskText = '雕茅经理逐条对需求';
+        break;
+      case 'RESPOND':
+        bgMode = 'boss';
+        bgDim = 0.5;
+        taskText = '怎么回应退回意见';
+        break;
+      case 'EVENT':
+        bgMode = 'office';
+        bgDim = 0.55;
+        taskText = '职场插曲';
+        break;
+      case 'BONUS':
+        bgMode = 'office';
+        bgDim = 0.55;
+        taskText = '分奖金';
+        break;
+      case 'PARTY':
+        bgMode = 'office';
+        bgDim = 0.55;
+        taskText = '庆功红包';
+        break;
+      case 'ENDING':
+        bgMode = 'office';
+        bgDim = 0.6;
+        taskText = '本局结束';
+        break;
+    }
+  } else if (screen === 'home') {
+    bgDim = 0.22;
+  }
 
+  return (
+    <div className="game-shell">
+      {bgMode ? <OfficeBackdrop mode={bgMode} reduceMotion={reduceMotion} dim={bgDim} /> : null}
+
+      <GameHud
+        onHome={screen === 'home' ? null : goHome}
+        onHowTo={() => setModal('howto')}
+        onCollection={() => setModal('collection')}
+        onSettings={() => setModal('settings')}
+        company={content.config.company}
+        taskText={taskText}
+        round={run && screen === 'run' ? run.round : null}
+        stats={run && screen === 'run' ? run.stats : null}
+      />
+
+      <div className={`game-main${screen === 'home' ? ' is-home' : ''}`}>
       {staleTab && screen === 'run' ? (
         <StaleTabNotice onSync={syncFromOtherTab} onNew={() => { setStaleTab(false); replay(); }} />
       ) : null}
@@ -377,6 +437,7 @@ export default function App() {
           ) : null}
         </>
       ) : null}
+      </div>
 
       {modal === 'howto' ? <HowToPlayModal onClose={() => setModal(null)} /> : null}
       {modal === 'collection' ? (

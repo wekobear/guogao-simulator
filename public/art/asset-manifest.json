@@ -1,0 +1,259 @@
+{
+  "office": {
+    "source": "/Users/vicbear/.codex/generated_images/01a104af-965f-7143-a43c-027ac65a10c1/exec-cbbdb116-542a-41ae-b553-84d1e37ec32c.png",
+    "output": "/Users/vicbear/Documents/ChatGPT/过稿模拟器/outputs/fullscene-assets/clean-office.png",
+    "public": "/Users/vicbear/Documents/z code/过稿模拟器/public/art/office-scene.png",
+    "width": 1672,
+    "height": 941,
+    "frames": 1,
+    "alpha": false,
+    "focalPoints": {
+      "teaPrinter": {
+        "x": 0.11,
+        "y": 0.5
+      },
+      "workstations": {
+        "x": 0.5,
+        "y": 0.51
+      },
+      "managerOffice": {
+        "x": 0.88,
+        "y": 0.48
+      }
+    },
+    "walkableFloor": {
+      "topY": 0.62,
+      "bottomY": 0.97,
+      "recommendedFeetY": 0.8
+    },
+    "cropNote": "Wide 16:9 panorama. For portrait mobile use a camera crop that follows player x; a static centered cover crop hides both side stations. Keep floor and character feet in view."
+  },
+  "playerStrip": {
+    "source": "/Users/vicbear/.codex/generated_images/01a104af-965f-7143-a43c-027ac65a10c1/exec-f8bbae5d-cb53-49f3-b8cb-b832eb67848e.png",
+    "output": "/Users/vicbear/Documents/ChatGPT/过稿模拟器/outputs/fullscene-assets/player-strip.png",
+    "public": "/Users/vicbear/Documents/z code/过稿模拟器/public/art/player-strip.png",
+    "width": 2172,
+    "height": 724,
+    "frames": 3,
+    "frameWidth": 724,
+    "frameHeight": 724,
+    "alpha": true,
+    "alphaRange": [
+      0,
+      255
+    ],
+    "solidPixelBoundsPerFrame": [
+      [
+        269,
+        78,
+        504,
+        681
+      ],
+      [
+        198,
+        75,
+        513,
+        685
+      ],
+      [
+        145,
+        76,
+        429,
+        681
+      ]
+    ],
+    "feetAnchorsPerFrame": [
+      {
+        "x": 0.53384,
+        "feetY": 0.94061,
+        "visibleHeight": 0.83287
+      },
+      {
+        "x": 0.49102,
+        "feetY": 0.94613,
+        "visibleHeight": 0.84254
+      },
+      {
+        "x": 0.39641,
+        "feetY": 0.94061,
+        "visibleHeight": 0.83564
+      }
+    ],
+    "sha256": "c64e162f60dd1f41d4e3a329c7205ee0198fdb9da229417ae4348a14072c8dd9",
+    "notes": "Original RGBA preserved; pixel bounds use alpha >= 128 for anchors. Do not trim strip into unequal cells. Use image-rendering: pixelated.",
+    "frameOrder": [
+      "idle",
+      "walk_stride",
+      "walk_passing_lifted_rear_heel"
+    ],
+    "facing": "right; mirror the frame with CSS transform for left",
+    "headCenterXPerFramePx": [
+      386.5,
+      343.5,
+      297.5
+    ],
+    "horizontalCorrectionToIdlePx": [
+      0,
+      43,
+      89
+    ],
+    "registrationNote": "AI strip retains transparent equal cells, but character position drifts horizontally in frames 2/3. Apply per-frame horizontal correction scaled by rendered cell width / 724 to stabilize the head. Feet baseline difference <=4px; compensate using recorded feet anchors.",
+    "frameRegistration": [
+      {
+        "index": 0,
+        "pose": "idle",
+        "sourceFrameRect": {
+          "x": 0,
+          "y": 0,
+          "width": 724,
+          "height": 724
+        },
+        "localVisibleBBox": {
+          "left": 269,
+          "top": 78,
+          "right": 504,
+          "bottom": 681
+        },
+        "sourceCropRect": {
+          "x": 269,
+          "y": 78,
+          "width": 235,
+          "height": 603
+        },
+        "visibleHeightPx": 603,
+        "headAnchorLocalPx": {
+          "x": 386.5
+        },
+        "feetAnchorLocalPx": {
+          "x": 386.5,
+          "y": 681
+        },
+        "headAnchorInCropPx": {
+          "x": 117.5
+        },
+        "feetAnchorInCropPx": {
+          "x": 117.5,
+          "y": 603
+        },
+        "horizontalCorrectionToIdlePx": 0
+      },
+      {
+        "index": 1,
+        "pose": "walk_stride",
+        "sourceFrameRect": {
+          "x": 724,
+          "y": 0,
+          "width": 724,
+          "height": 724
+        },
+        "localVisibleBBox": {
+          "left": 198,
+          "top": 75,
+          "right": 513,
+          "bottom": 685
+        },
+        "sourceCropRect": {
+          "x": 922,
+          "y": 75,
+          "width": 315,
+          "height": 610
+        },
+        "visibleHeightPx": 610,
+        "headAnchorLocalPx": {
+          "x": 343.5
+        },
+        "feetAnchorLocalPx": {
+          "x": 343.5,
+          "y": 685
+        },
+        "headAnchorInCropPx": {
+          "x": 145.5
+        },
+        "feetAnchorInCropPx": {
+          "x": 145.5,
+          "y": 610
+        },
+        "horizontalCorrectionToIdlePx": 43
+      },
+      {
+        "index": 2,
+        "pose": "walk_passing_lifted_rear_heel",
+        "sourceFrameRect": {
+          "x": 1448,
+          "y": 0,
+          "width": 724,
+          "height": 724
+        },
+        "localVisibleBBox": {
+          "left": 145,
+          "top": 76,
+          "right": 429,
+          "bottom": 681
+        },
+        "sourceCropRect": {
+          "x": 1593,
+          "y": 76,
+          "width": 284,
+          "height": 605
+        },
+        "visibleHeightPx": 605,
+        "headAnchorLocalPx": {
+          "x": 297.5
+        },
+        "feetAnchorLocalPx": {
+          "x": 297.5,
+          "y": 681
+        },
+        "headAnchorInCropPx": {
+          "x": 152.5
+        },
+        "feetAnchorInCropPx": {
+          "x": 152.5,
+          "y": 605
+        },
+        "horizontalCorrectionToIdlePx": 89
+      }
+    ],
+    "scaleReferenceVisibleHeightPx": 603,
+    "recommendedFixedScaleFormula": "scale = desiredVisibleCharacterHeight / scaleReferenceVisibleHeightPx (603); preserve this scale across all animation frames"
+  },
+  "bossIdle": {
+    "source": "/Users/vicbear/.codex/generated_images/01a104af-965f-7143-a43c-027ac65a10c1/exec-fa8c98a6-029c-4f12-bf44-56905e2943d0.png",
+    "output": "/Users/vicbear/Documents/ChatGPT/过稿模拟器/outputs/fullscene-assets/boss-idle.png",
+    "public": "/Users/vicbear/Documents/z code/过稿模拟器/public/art/boss-idle.png",
+    "width": 1254,
+    "height": 1254,
+    "frames": 1,
+    "frameWidth": 1254,
+    "frameHeight": 1254,
+    "alpha": true,
+    "alphaRange": [
+      0,
+      255
+    ],
+    "solidPixelBoundsPerFrame": [
+      [
+        451,
+        130,
+        794,
+        1176
+      ]
+    ],
+    "feetAnchorsPerFrame": [
+      {
+        "x": 0.49641,
+        "feetY": 0.9378,
+        "visibleHeight": 0.83413
+      }
+    ],
+    "sha256": "82b66f3531e9d9a777e51ef84a4b7dd33c7311e3cf6e990d7d7e9218d9757fe1",
+    "notes": "Original RGBA preserved; pixel bounds use alpha >= 128 for anchors. Do not trim strip into unequal cells. Use image-rendering: pixelated.",
+    "facing": "left three-quarter",
+    "solidPixelBounds": [
+      451,
+      130,
+      794,
+      1176
+    ]
+  }
+}

@@ -16,6 +16,9 @@
   --green-soft: #1f3329;
   --amber: #f7b733;
   --amber-soft: #3a2f18;
+  /* HUD 四状态条专属色相：信任珊瑚红 / 凭证暖橙（与 green/amber 一眼可分） */
+  --coral: #ff7a66;
+  --orange: #ffa04d;
   --shadow: 4px 4px 0 rgba(10, 8, 16, 0.55);
   --radius: 6px;
   --radius-sm: 4px;
@@ -60,25 +63,107 @@ button {
   font-size: 16px;
 }
 
-/* ---------- 布局骨架 ---------- */
+/* ---------- 布局骨架（v0.3.0 GameShell：全屏场景 + 覆盖式 HUD 与面板） ---------- */
 
-.app-shell {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+html,
+body {
+  height: 100%;
+  overflow: hidden;
 }
 
-.page {
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
+#root {
+  height: 100dvh;
+}
+
+.game-shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 全屏办公室场景层：铺满整个视口（含 HUD 底下），HUD 与面板浮在其上 */
+.scene-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+
+.scene-canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* 主内容区：HUD 之下的全部空间；面板/舞台都在这一层里各自滚动或铺满 */
+.game-main {
+  position: relative;
+  z-index: 5;
   flex: 1;
+  min-height: 0;
+}
+
+.game-main > .notice {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: min(560px, calc(100% - 24px));
+  box-shadow: var(--shadow);
+}
+
+/*
+ * 面板页：绝对定位 + margin auto —— 内容短于视口时垂直居中成浮层卡，
+ * 超长时收缩到视口高并独立滚动，正文总能读完；不撑出横向滚动。
+ */
+.page {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(720px, calc(100% - 20px));
+  max-height: calc(100% - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding: 18px 18px calc(20px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 14px;
+  background: rgba(19, 16, 28, 0.88);
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
   animation: fade-in 160ms ease-out;
+}
+
+/* bare：不做面板（办公室视图自带全屏舞台） */
+.page.bare {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  max-height: none;
+  overflow: hidden;
+  background: none;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 0;
+  gap: 0;
+}
+
+@media (min-width: 1024px) {
+  .page.wide {
+    width: min(1040px, calc(100% - 32px));
+  }
 }
 
 .view-title {
@@ -202,7 +287,57 @@ button {
   flex: 1 1 140px;
 }
 
-/* ---------- 首页 ---------- */
+/* ---------- 首页（全出血：全屏办公室场景 + 分层覆盖内容） ---------- */
+
+/* 覆盖层容器：铺满 game-main，内容靠上排——场景走道在画面下 1/3，
+ * 踱步角色完整可见，不被标题/菜单/按钮压住；内容超高时仍可滚动 */
+.home-full {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  max-height: none;
+  overflow-y: auto;
+  background: none;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  gap: 14px;
+  padding: clamp(20px, 6vh, 64px) 18px calc(72px + env(safe-area-inset-bottom));
+}
+
+.home-full .home-heading {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.home-full .home-tagline {
+  text-shadow: 1px 1px 0 rgba(8, 6, 14, 0.75);
+}
+
+.home-full .home-rules {
+  margin-top: 4px;
+}
+
+.home-full .home-actions {
+  margin-top: 10px;
+}
+
+.home-full .home-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(8px + env(safe-area-inset-bottom));
+  margin: 0;
+  text-shadow: 1px 1px 0 rgba(8, 6, 14, 0.7);
+}
 
 .home {
   align-items: stretch;
@@ -213,14 +348,17 @@ button {
 }
 
 .home-title {
-  /* 320px 窄屏放不下 5×52px 字距标题，按视口收缩，桌面保持原大字 */
+  /* 320px 窄屏放不下 5×52px 字距标题，按视口收缩，桌面保持原大字；
+   * 厚重黑体金字（logo 与 HUD 品牌同风格，不再用细宋体） */
   font-size: clamp(38px, 13vw, 52px);
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.1em;
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--font);
   color: var(--pixel-gold);
-  text-shadow: 4px 4px 0 rgba(8, 6, 14, 0.9);
+  text-shadow:
+    0 2px 0 #8a5f13,
+    4px 4px 0 rgba(8, 6, 14, 0.9);
 }
 
 .home-chapter {
@@ -469,9 +607,6 @@ button {
 }
 
 @media (min-width: 1024px) {
-  .page.wide {
-    max-width: 1040px;
-  }
   .workspace-grid {
     grid-template-columns: 380px 1fr;
     align-items: start;
@@ -920,26 +1055,27 @@ button {
   margin-bottom: 2px;
 }
 
-/* ---------- 评审 ---------- */
-
-.score-hero {
-  text-align: center;
-  padding: 6px 0 2px;
-}
+/* ---------- 评审（v0.3.0 polish：紧凑对话面板 + 双读数分数区） ---------- */
 
 .score-title {
   font-size: 13px;
-  letter-spacing: 0.22em;
-  color: var(--ink-soft);
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  font-weight: 700;
   margin: 0;
 }
 
 .score-value {
-  font-size: 56px;
-  font-weight: 800;
-  line-height: 1.1;
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
-  margin: 2px 0;
+  margin: 0;
+}
+
+.score-value.structure {
+  font-size: 32px;
+  color: var(--amber);
 }
 
 .score-value.pass {
@@ -953,20 +1089,19 @@ button {
 .grade-badge {
   display: inline-grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
   border: 2px solid currentColor;
   font-family: var(--serif);
   font-weight: 800;
-  font-size: 24px;
-  margin: 4px auto 0;
+  font-size: 17px;
 }
 
 .verdict {
   font-weight: 700;
-  font-size: 17px;
-  margin: 8px 0 0;
+  font-size: 14px;
+  margin: 0;
 }
 
 .verdict.pass {
@@ -1346,38 +1481,214 @@ details.full-record summary {
   margin: 0 auto;
 }
 
-/* ---------- 顶部栏 ---------- */
+/* ---------- 游戏 HUD（参考 Pixel Office Game UI Asset Sheet 顶栏） ---------- */
 
-.topbar {
+.game-hud {
+  position: relative;
+  z-index: 10;
+  flex: none;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 10px 16px 0;
-  max-width: 720px;
-  margin: 0 auto;
-  width: 100%;
+  gap: 16px;
+  min-height: 72px;
+  padding: 10px 18px;
+  background: linear-gradient(180deg, rgba(26, 21, 36, 0.96), rgba(20, 16, 28, 0.88));
+  border-bottom: 2px solid #2c2440;
+  box-shadow: 0 3px 0 rgba(8, 6, 14, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.topbar .brand {
-  font-family: var(--serif);
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 0.12em;
-  color: var(--ink);
+/* 左：金色中文 logo + 英文副标 / 周四 18:47 / 公司 */
+.hud-left {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.hud-brand {
+  /* 厚重黑体金字（不再用细宋体），硬阴影保持像素字牌感 */
+  font-family: var(--font);
+  font-weight: 900;
+  font-size: 19px;
+  letter-spacing: 0.14em;
+  color: var(--pixel-gold);
+  text-shadow:
+    0 1.5px 0 #8a5f13,
+    2px 2px 0 rgba(8, 6, 14, 0.85);
   background: none;
   border: none;
+  padding: 6px 2px;
   cursor: pointer;
-  padding: 6px 0;
+  white-space: nowrap;
 }
 
-.topbar-actions {
+button.hud-brand:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.hud-sub {
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  color: #7d7391;
+  white-space: nowrap;
+}
+
+.hud-meta {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 中：琥珀任务 + 提交次数 + 四条细状态条 */
+.hud-mid {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+}
+
+.hud-task {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.hud-task-label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--amber);
+  text-shadow: 1px 1px 0 rgba(8, 6, 14, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.hud-round {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-round-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.hud-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-soft);
+}
+
+.hud-dot.done {
+  background: var(--amber);
+  border-color: var(--amber);
+}
+
+.hud-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 16px;
+  flex-wrap: wrap;
+}
+
+.hud-stat {
+  display: grid;
+  grid-template-columns: auto 56px auto;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  /* 暖白正文：比 ink-soft 亮一档，四色条旁边的名字/数值保持可读 */
+  color: #cfc5b0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.hud-stat-bar {
+  width: 56px;
+  height: 5px;
+  border-radius: 999px;
+  background: #131020;
+  border: 1px solid rgba(82, 74, 110, 0.6);
+  overflow: hidden;
+}
+
+.hud-stat-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ink);
+  transition: width 160ms ease;
+}
+
+.hud-stat-fill[data-tone='gold'] {
+  background: var(--amber);
+}
+
+.hud-stat-fill[data-tone='green'] {
+  background: var(--green);
+}
+
+.hud-stat-fill[data-tone='coral'] {
+  background: var(--coral);
+}
+
+.hud-stat-fill[data-tone='orange'] {
+  background: var(--orange);
+}
+
+.hud-stat-fill[data-tone='red'] {
+  background: var(--red);
+}
+
+.hud-stat-value {
+  font-variant-numeric: tabular-nums;
+  min-width: 2em;
+}
+
+.hud-scope-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.hud-scope-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  border: 1px solid var(--red);
+}
+
+.hud-scope-dot.on {
+  background: var(--red);
+}
+
+/* 右：玩法 / 图鉴 / 设置线条图标 */
+.hud-tools {
+  flex: none;
   display: flex;
   gap: 2px;
 }
 
-/* 图标工具按钮：≥480px 显示图标+短标签，更窄时仅图标（aria-label 保底） */
-.topbar-tool {
+.hud-tool {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1395,28 +1706,99 @@ details.full-record summary {
   transition: color 140ms ease, background 140ms ease;
 }
 
-.topbar-tool:hover {
+.hud-tool:hover {
   color: var(--ink);
-  background: var(--card-deep);
+  background: rgba(38, 31, 54, 0.85);
 }
 
-.topbar-tool svg {
-  width: 24px;
-  height: 24px;
+.hud-tool svg {
+  width: 22px;
+  height: 22px;
   flex: none;
 }
 
-.topbar-tool-label {
+.hud-tool-label {
   display: none;
 }
 
-@media (min-width: 480px) {
-  .topbar-tool {
+@media (min-width: 1024px) {
+  .hud-tool {
     padding: 0 10px;
   }
 
-  .topbar-tool-label {
+  .hud-tool-label {
     display: inline;
+  }
+}
+
+/* 移动端两层精简 HUD：品牌工具行 + 任务指标行（≤900 含 768 平板竖屏） */
+@media (max-width: 900px) {
+  .game-hud {
+    flex-wrap: wrap;
+    align-content: center;
+    row-gap: 4px;
+    column-gap: 10px;
+    min-height: 0;
+    padding: 8px 12px;
+  }
+
+  .hud-left {
+    /* basis 0：品牌行优先容纳工具按钮，公司名超长时自身省略 */
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .hud-brand {
+    font-size: 16px;
+  }
+
+  .hud-sub {
+    display: none;
+  }
+
+  .hud-meta {
+    font-size: 10.5px;
+    max-width: 40vw;
+    min-width: 0;
+  }
+
+  .hud-mid {
+    order: 3;
+    flex-basis: 100%;
+    gap: 4px;
+  }
+
+  .hud-task-label {
+    font-size: 13px;
+  }
+
+  .hud-stat {
+    font-size: 10.5px;
+    grid-template-columns: auto 46px auto;
+    gap: 5px;
+  }
+
+  .hud-stat-bar {
+    width: 46px;
+  }
+}
+
+@media (max-width: 380px) {
+  .hud-meta {
+    display: none;
+  }
+
+  .hud-stats {
+    gap: 4px 12px;
+  }
+
+  .hud-stat {
+    grid-template-columns: auto 38px auto;
+  }
+
+  .hud-stat-bar {
+    width: 38px;
   }
 }
 
@@ -1603,15 +1985,6 @@ details.full-record summary {
   background: var(--red-soft);
   color: var(--red);
 }
-.sketch-boss {
-  margin: 10px 0 4px;
-  padding: 10px 12px;
-  border-left: 3px solid var(--red);
-  background: var(--bg);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  font-size: 14px;
-  line-height: 1.6;
-}
 .doc-card {
   margin-top: 10px;
   padding: 10px 12px;
@@ -1644,77 +2017,195 @@ details.full-record summary {
 
 /* ===== 2.5D 像素办公室（认真模式 / 首页 / 审稿对峙） ===== */
 
-.office-canvas {
+/* ---- 办公室交互舞台（v0.3.0：真实环境图 fill + HTML 热点徽标 + 触控层） ---- */
+
+.office-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* 画布尺寸由容器与 JS 共同决定：fill、不拉伸（内部 pan/crop）、禁浏览器手势 */
+.office-canvas,
+.stage-canvas {
   display: block;
   width: 100%;
-  aspect-ratio: 960 / 420;
+  height: 100%;
+  background: #191426;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  background: #191426;
-  border: 2px solid var(--pixel-ink);
-  border-radius: 4px;
-  box-shadow: var(--pixel-shadow);
+  touch-action: none;
+  user-select: none;
+}
+
+.office-stage .office-canvas,
+.office-stage .stage-canvas {
   cursor: crosshair;
 }
 
-/* ---- 首页舞台 ---- */
-.home-stage .home-heading {
-  text-align: center;
-}
-.home-stage .home-title {
-  text-shadow: 4px 4px 0 rgba(8, 6, 14, 0.9);
-}
-.home-stage-wrap {
-  position: relative;
-  max-width: 960px;
-  margin: 0 auto;
-  width: 100%;
-}
-.home-canvas {
-  cursor: default;
-}
-.home-stage-cap {
+/* 热点徽标：绝对定位原点由 JS transform 逐帧贴合世界坐标 */
+.stage-badges {
   position: absolute;
-  left: 10px;
-  bottom: 8px;
-  margin: 0;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: rgba(237, 230, 214, 0.72);
-  text-shadow: 1px 1px 0 rgba(19, 20, 26, 0.8);
+  inset: 0;
   pointer-events: none;
+  z-index: 3;
 }
 
-/* ---- 办公室视图 ---- */
-.office-view {
-  gap: 12px;
-}
-.office-toprow {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.office-stage-wrap {
-  position: relative;
-}
-.office-hud {
-  margin-top: 8px;
+.stage-badge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  /* 触摸目标 ≥44px：徽标悬浮在人物头顶上方，宁可整体大一圈 */
+  min-height: 44px;
+  padding: 6px 14px 6px 7px;
+  border-radius: 999px;
+  border: 2px solid #545d6e;
+  background: rgba(19, 20, 26, 0.92);
+  color: #ede6d6;
+  font: inherit;
   font-size: 13.5px;
-  color: var(--ink-soft);
-  background: var(--card);
-  border: 1.5px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  min-height: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: var(--pixel-shadow);
+  transition: border-color 120ms ease, background 120ms ease;
+  will-change: transform;
 }
+
+/* 悬浮标牌的下指小箭头：标明对应的地面热点 */
+.stage-badge::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 10px;
+  height: 10px;
+  transform: translateX(-50%) rotate(45deg);
+  background: rgba(19, 20, 26, 0.92);
+  border-right: 2px solid #545d6e;
+  border-bottom: 2px solid #545d6e;
+}
+
+.stage-badge.near::after {
+  border-color: var(--pixel-gold);
+  background: rgba(42, 36, 22, 0.95);
+}
+
+.stage-badge:hover {
+  border-color: var(--pixel-gold);
+}
+
+.stage-badge-key {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: #545d6e;
+  color: #ede6d6;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+/* 玩家在热点范围内：金框高亮 + E 键点亮 */
+.stage-badge.near {
+  border-color: var(--pixel-gold);
+  background: rgba(42, 36, 22, 0.95);
+}
+
+.stage-badge.near .stage-badge-key {
+  background: var(--pixel-gold);
+  color: var(--pixel-ink);
+}
+
+/* 操作提示条：底部导航带上方居中 */
+.office-hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(70px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 6;
+  max-width: min(560px, calc(100% - 24px));
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(82, 74, 110, 0.85);
+  background: rgba(19, 16, 28, 0.88);
+  color: var(--ink);
+  font-size: 13.5px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  text-shadow: 1px 1px 0 rgba(8, 6, 14, 0.7);
+}
+
+/* 需求：右上角可展开 */
+.office-req {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 6;
+}
+
+.office-req-toggle {
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid #545d6e;
+  background: rgba(19, 16, 28, 0.9);
+  color: var(--amber);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--pixel-shadow);
+}
+
+.office-req-toggle[aria-expanded='true'] {
+  border-color: var(--pixel-gold);
+}
+
+.office-req-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(360px, calc(100vw - 24px));
+  padding: 14px;
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: rgba(19, 16, 28, 0.94);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.office-req-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+}
+
+.office-req-lines {
+  margin: 0;
+  padding-left: 1.3em;
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 叙事气泡：顶部居中（HUD 下方） */
 .office-bubble {
   position: absolute;
   left: 50%;
-  top: 14px;
+  top: 12px;
   transform: translateX(-50%);
-  max-width: min(560px, 86%);
+  max-width: min(560px, 88%);
   background: rgba(19, 20, 26, 0.92);
   color: #ede6d6;
   border: 2px solid var(--pixel-gold);
@@ -1724,20 +2215,44 @@ details.full-record summary {
   line-height: 1.6;
   box-shadow: var(--pixel-shadow);
   animation: pop-in 140ms ease-out;
-  z-index: 5;
+  z-index: 8;
 }
+
+/* 触控层：左下方向键 + 右下 ≥48px 交互键 */
 .office-touch {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
   display: none;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 10px;
 }
-.touch-btn {
+
+.office-touch-move {
+  position: absolute;
+  left: calc(12px + env(safe-area-inset-left));
+  bottom: calc(74px + env(safe-area-inset-bottom));
+  display: flex;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.office-touch .office-touch-e {
+  position: absolute;
+  right: calc(12px + env(safe-area-inset-right));
+  bottom: calc(74px + env(safe-area-inset-bottom));
+  width: 64px;
   min-width: 64px;
-  min-height: 52px;
+  min-height: 64px;
+  font-size: 20px;
+  pointer-events: auto;
+}
+
+.touch-btn {
+  min-width: 60px;
+  min-height: 60px;
   border-radius: var(--radius-sm);
   border: 2px solid var(--pixel-ink);
-  background: var(--card);
+  background: rgba(33, 29, 46, 0.92);
   /* 按钮不继承正文颜色，UA 默认 buttontext 近黑——深靛底上箭头看不清，显式给奶油白 */
   color: var(--ink);
   font-size: 18px;
@@ -1745,47 +2260,137 @@ details.full-record summary {
   box-shadow: var(--pixel-shadow);
   touch-action: none;
   user-select: none;
+  -webkit-user-select: none;
 }
+
 .touch-btn.act {
   background: var(--pixel-gold);
   color: var(--pixel-ink);
 }
+
 @media (pointer: coarse), (max-width: 720px) {
   .office-touch {
-    display: flex;
+    display: block;
   }
 }
-.office-stats {
+
+/* 低调快速导航带：底部渐隐压暗条（回工位 / 去经理室 / 退出） */
+.office-quick {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
   flex-wrap: wrap;
-  gap: 6px 16px;
-  font-size: 13px;
-  color: var(--ink-soft);
-  border-top: 1px dashed var(--line);
-  border-bottom: 1px dashed var(--line);
-  padding: 8px 2px;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(10, 8, 16, 0) 0%, rgba(10, 8, 16, 0.72) 40%);
+  pointer-events: none;
 }
+
+.office-quick-btn {
+  pointer-events: auto;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(82, 74, 110, 0.85);
+  background: rgba(19, 16, 28, 0.85);
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease;
+}
+
+.office-quick-btn:hover {
+  color: var(--ink);
+  border-color: var(--pixel-gold);
+}
+
+.office-quick-btn.ghost {
+  border-style: dashed;
+}
+
+/* 触屏：导航带收成单行可横滑，不与左右下角触控键（bottom 74px 起）叠行 */
+@media (pointer: coarse), (max-width: 720px) {
+  .office-quick {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    justify-content: flex-start;
+  }
+
+  .office-quick-btn {
+    flex: none;
+    font-size: 12.5px;
+    padding: 8px 11px;
+  }
+
+  /* 操作提示移到 HUD 下、场景上方左侧：底部位置会压到角色小腿；
+   * 右侧留 104px 余量给右上需求按钮 */
+  .office-hint {
+    top: 16px;
+    bottom: auto;
+    left: 12px;
+    transform: none;
+    max-width: calc(100% - 104px);
+  }
+}
+
+.office-store-note {
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  max-width: min(520px, 88%);
+}
+
 .office-confirm .modal-body {
   font-size: 14.5px;
 }
 
-/* ---- 拼装编辑器（底部升起设计台） ---- */
+/* ---- 拼装编辑器（场景内面板：PC workbench / 移动全高 bottomsheet） ---- */
+
+/* 覆盖层：铺在办公室舞台上，编辑期间场景保持原位（关闭回当前办公室位置） */
+.asm-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(10, 8, 16, 0.55);
+  animation: fade-in 140ms ease-out;
+}
+
 .asm-editor {
-  background: var(--pixel-ink);
+  background: #15161d;
   color: #ede6d6;
   border: 2px solid var(--pixel-gold);
-  border-radius: 6px;
+  border-radius: 8px;
   box-shadow: var(--pixel-shadow);
-  padding: 14px;
-  display: grid;
-  gap: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(1120px, 100%);
+  max-height: 100%;
+  overflow: hidden;
 }
+
+/* PC 头部：标题 + 设备切换 + 保存并回到办公室 */
 .asm-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
   flex-wrap: wrap;
+  flex: none;
 }
 .asm-title {
   margin: 0;
@@ -1794,11 +2399,38 @@ details.full-record summary {
   color: var(--pixel-gold);
   letter-spacing: 0.06em;
 }
-.asm-sub {
-  margin: 2px 0 0;
-  font-size: 12.5px;
-  color: #838c9e;
-  max-width: 520px;
+/* 需求折叠条：默认收起不占编辑空间，展开显示完整逐条需求 */
+.asm-req-fold {
+  margin-top: 6px;
+}
+.asm-req-chip {
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1.5px solid #545d6e;
+  background: #13141a;
+  color: var(--amber);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.asm-req-chip:hover,
+.asm-req-chip[aria-expanded='true'] {
+  border-color: var(--pixel-gold);
+}
+.asm-req-lines {
+  margin: 8px 0 0;
+  padding: 10px 16px 10px 2em;
+  display: grid;
+  gap: 5px;
+  max-width: 560px;
+  border: 1.5px solid #2c2f3c;
+  border-radius: 6px;
+  background: #13141a;
+  color: #cfc7b4;
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: left;
 }
 .asm-head-actions {
   display: flex;
@@ -1834,22 +2466,185 @@ details.full-record summary {
   border-color: #545d6e;
   color: #ede6d6;
 }
+
+/* 移动端 tabs：部件 / 编排 / 预览（PC 隐藏，三列全展示） */
+.asm-tabs {
+  display: none;
+  flex: none;
+  gap: 6px;
+}
+
+.asm-tab {
+  flex: 1;
+  min-height: 42px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid #545d6e;
+  background: #13141a;
+  color: #838c9e;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.asm-tab.on {
+  border-color: var(--pixel-gold);
+  background: #2a2416;
+  color: #ede6d6;
+}
+
+/* PC workbench：左部件池 / 中实时预览 / 右编排轨道（grid areas 重排 DOM 顺序） */
 .asm-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   display: grid;
-  grid-template-columns: 220px 1fr 340px;
-  gap: 12px;
+  grid-template-areas:
+    'dock preview track';
+  grid-template-columns: 250px minmax(0, 1fr) 340px;
+  gap: 14px;
 }
-@media (max-width: 1020px) {
-  .asm-body {
-    grid-template-columns: 1fr 1fr;
+
+.asm-dock {
+  grid-area: dock;
+  min-width: 0;
+}
+
+.asm-track {
+  grid-area: track;
+  min-width: 0;
+}
+
+.asm-preview {
+  grid-area: preview;
+  min-width: 0;
+}
+
+/* 预览区头：说明 + 移动端设备切换（PC 的切换在头部，此处隐藏避免重复） */
+.asm-preview-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.asm-preview-head .asm-label {
+  margin: 0;
+}
+
+.asm-preview-switch {
+  display: none;
+}
+
+.asm-preview-switch button {
+  min-height: 34px;
+  padding: 4px 12px;
+  font-size: 12.5px;
+}
+
+/* 移动端 bottomsheet：全高、抓手在面板最顶；标题先于 tabs，内部按 tab 分层滚动 */
+@media (max-width: 1023px) {
+  .asm-overlay {
+    align-items: stretch;
+    padding: 0;
+    background: rgba(10, 8, 16, 0.6);
   }
-  .asm-preview {
-    grid-column: 1 / -1;
+
+  .asm-editor {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding: 0 14px calc(env(safe-area-inset-bottom));
+    gap: 0;
+    position: relative;
+  }
+
+  /* 顶把手（bottomsheet 抓手，纯装饰）：让出标题区，贴在面板最顶 */
+  .asm-editor::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 5px;
+    border-radius: 999px;
+    background: #545d6e;
+  }
+
+  /* 标题 + 需求折叠先于 tabs；PC 的设备切换与保存按钮不占首行 */
+  .asm-head {
+    order: 1;
+    padding-top: 18px;
+  }
+
+  .asm-head-actions {
+    display: none;
+  }
+
+  .asm-tabs {
+    order: 2;
+    display: flex;
+    margin: 10px 0 8px;
+  }
+
+  /* 画布提示 / 存储警告是编辑器直接子元素：排进内容流（tabs 之后），不顶到抓手上面 */
+  .asm-canvas-notice,
+  .asm-editor > .notice {
+    order: 2;
+    margin: 10px 14px 0;
+  }
+
+  .asm-body {
+    order: 3;
+    display: block;
+    overflow-y: auto;
+    padding-bottom: 12px;
+  }
+
+  .asm-body > section {
+    display: none;
+  }
+
+  .asm-body[data-tab='parts'] > .asm-dock,
+  .asm-body[data-tab='track'] > .asm-track,
+  .asm-body[data-tab='preview'] > .asm-preview {
+    display: block;
+  }
+
+  .asm-close-desktop {
+    display: none;
+  }
+
+  /* 预览设备切换只在移动端预览区出现（PC 保留头部切换） */
+  .asm-preview-switch {
+    display: inline-flex;
   }
 }
-@media (max-width: 700px) {
-  .asm-body {
-    grid-template-columns: 1fr;
+
+/* 底部固定操作栏（移动端）：保存回场景 */
+.asm-foot {
+  display: none;
+  flex: none;
+  gap: 10px;
+  padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+}
+
+.asm-save {
+  flex: 1;
+  min-height: 48px;
+  font-size: 15px;
+}
+
+@media (max-width: 1023px) {
+  .asm-foot {
+    display: flex;
+    order: 4;
   }
 }
 .asm-label {
@@ -2313,31 +3108,79 @@ details.full-record summary {
   line-height: 1.6;
 }
 
-/* ---- Boss 审稿对峙舞台 ---- */
-.boss-stage-wrap {
-  position: relative;
-  max-width: 960px;
-  width: 100%;
-  margin: 0 auto;
-  /* 印章 boss-stamp 入场 scale(2.2) 是纯装饰变换，绘制限制在舞台画布内，
-     不撑大页面 scrollWidth；落定态印章与台词气泡均在容器内，不受裁切 */
-  overflow: hidden;
-  overflow: clip;
+/* ---- 评审（v0.3.0 polish：全局经理室背景 + 紧凑游戏对话面板） ---- */
+
+/* 面板标题缩小：把高度让给对话与分数 */
+.review-page .view-title {
+  font-size: 17px;
 }
+
+/* 紧凑对话面板：经理肖像（boss-idle 裁显半身）+ 一份台词 + 判定章 */
+.boss-dialog {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  padding: 12px;
+  border: 2px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(19, 20, 26, 0.92);
+  box-shadow: var(--pixel-shadow);
+}
+
+/* 肖像：素材人物只占源宽约 27%，等比缩到框内会是远小全身像——
+ * 固定放大宽度 + 上移锚点，窗口裁显头肩半身（素材 sha256 固定，偏移可依赖） */
+.boss-portrait-wrap {
+  position: relative;
+  flex: none;
+  width: 84px;
+  height: 96px;
+  overflow: hidden;
+  border: 2px solid #545d6e;
+  border-radius: 6px;
+  background: #232030;
+}
+
+.boss-portrait {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  width: 300px;
+  height: auto;
+  transform: translateX(-50%);
+}
+
+.boss-dialog-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+}
+
+.boss-dialog-name {
+  margin: 0;
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  color: var(--amber);
+}
+
+/* 判定章：叠在对话面板右上角（fx-stamp 轻量 CSS 入场，reduce-motion 下静止） */
 .boss-verdict {
   position: absolute;
-  top: 18px;
-  right: 26px;
+  top: -12px;
+  right: 10px;
   font-family: var(--serif);
   font-weight: 800;
-  font-size: 30px;
-  letter-spacing: 0.14em;
-  padding: 8px 18px;
-  border: 4px double currentColor;
+  font-size: 19px;
+  letter-spacing: 0.12em;
+  padding: 5px 12px;
+  border: 3px double currentColor;
   border-radius: 6px;
-  transform: rotate(-9deg);
+  background: rgba(19, 16, 28, 0.92);
+  transform: rotate(-6deg);
   pointer-events: none;
-  animation: boss-stamp 240ms steps(4) 1;
 }
 .boss-verdict.pass {
   color: #7ee08a;
@@ -2347,55 +3190,176 @@ details.full-record summary {
   color: var(--pixel-red);
   text-shadow: 2px 2px 0 rgba(19, 20, 26, 0.9);
 }
+.fx-stamp {
+  animation: boss-stamp 240ms steps(4) 1;
+}
 @keyframes boss-stamp {
   from {
-    transform: rotate(-9deg) scale(2.2);
+    transform: rotate(-6deg) scale(2.2);
     opacity: 0;
   }
   to {
-    transform: rotate(-9deg) scale(1);
+    transform: rotate(-6deg) scale(1);
     opacity: 1;
   }
 }
+
+/* 经理台词：对话面板内唯一一份，深炭底红边暖白字 */
 .boss-bubble {
-  position: absolute;
-  left: 14px;
-  bottom: 64px;
-  max-width: min(420px, 62%);
+  max-width: 100%;
+  margin: 0;
   background: rgba(19, 20, 26, 0.92);
   color: #ede6d6;
   border: 2px solid var(--pixel-red);
   border-radius: 4px;
   padding: 10px 13px;
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.7;
   box-shadow: var(--pixel-shadow);
   animation: pop-in 200ms ease-out;
-  z-index: 4;
 }
-@media (max-width: 720px) {
-  .boss-bubble {
-    bottom: auto;
-    top: 10px;
-    max-width: 74%;
-    font-size: 13px;
-  }
-  .boss-verdict {
-    font-size: 22px;
-    top: auto;
-    bottom: 12px;
-    right: 14px;
-  }
+
+/* 分数区：综合过稿指数与原型结构完整度两个读数并排（窄屏堆叠），高度紧凑 */
+.review-scores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 10px;
 }
-/* 超窄屏（≤380px）：画布高度装不下多行台词的悬浮层，改为画布下方常规排布，不遮挡指标卡 */
-@media (max-width: 380px) {
-  .boss-verdict {
-    position: static;
-    margin: 10px auto 0;
+
+.score-block {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: rgba(19, 16, 28, 0.85);
+}
+
+.score-block.main.pass {
+  border-color: rgba(111, 206, 138, 0.55);
+}
+
+.score-block.main.fail {
+  border-color: rgba(224, 90, 85, 0.55);
+}
+
+.score-block.structure {
+  border-color: rgba(247, 183, 51, 0.45);
+}
+
+.score-meta {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  justify-items: start;
+}
+
+.score-sub {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.score-reasons {
+  grid-column: 1 / -1;
+}
+
+.score-reasons > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.score-reasons > summary:hover {
+  color: var(--ink);
+}
+
+.score-reasons[open] > summary {
+  margin-bottom: 6px;
+}
+
+/* 可折叠的原型检查 / 需求规范：summary 44px 触摸目标，展开全文可读 */
+.review-fold {
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: rgba(19, 16, 28, 0.85);
+  padding: 0 12px;
+}
+
+.review-fold > summary {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.review-fold > summary::-webkit-details-marker {
+  display: none;
+}
+
+.review-fold > summary::before {
+  content: '▸';
+  color: var(--amber);
+  font-size: 13px;
+  transition: transform 140ms ease;
+}
+
+.review-fold[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.review-fold[open] > summary {
+  border-bottom: 1.5px solid var(--line);
+  margin-bottom: 8px;
+}
+
+.review-fold .sketch-findings,
+.review-fold .doc-card {
+  margin: 0 0 10px;
+}
+
+.review-continue {
+  flex: none;
+}
+
+@media (max-width: 480px) {
+  .boss-portrait-wrap {
+    width: 68px;
+    height: 80px;
   }
+
+  /* 80px 框配 300 宽会把下巴裁掉：源图头发 y130 / 下巴 y453，220 宽 + top -18
+   * 缩放后头发 4.8 / 下巴 61.5，整头带肩落在框内；PC 维持 300 宽不变 */
+  .boss-portrait {
+    width: 220px;
+    top: -18px;
+  }
+
+  .boss-verdict {
+    font-size: 15px;
+    padding: 4px 9px;
+    top: -10px;
+  }
+
   .boss-bubble {
-    position: static;
-    max-width: 100%;
-    margin-top: 8px;
+    font-size: 13.5px;
+  }
+
+  .score-value {
+    font-size: 32px;
+  }
+
+  .score-value.structure {
+    font-size: 27px;
   }
 }

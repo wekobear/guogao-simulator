@@ -155,7 +155,7 @@ test.describe('用户报告问题回归：插曲页（393 / 320）', () => {
   }
 });
 
-test('拼装器 393：上下结构，添加/编辑/预览/保存全流程可用', async ({ page }) => {
+test('拼装器 393：bottomsheet 分层 tabs，添加/编辑/预览/保存全流程可用', async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto('/?seed=1');
   await page.getByRole('button', { name: '新开一单' }).click();
@@ -169,31 +169,39 @@ test('拼装器 393：上下结构，添加/编辑/预览/保存全流程可用'
   const editor = page.getByRole('region', { name: '落地页拼装编辑器' });
   await expect(editor).toBeVisible();
 
-  // 窄屏为上下单列：部件池 → 编排轨道 → 预览 依次向下排
-  const pool = (await page.getByText('添加部件（按落地页从上到下拼）').boundingBox())!;
-  const track = (await page.getByText('编排轨道（拖拽或用按钮调整顺序）').boundingBox())!;
-  const preview = (await page.getByText(/实时预览/).boundingBox())!;
-  expect(track.y).toBeGreaterThan(pool.y);
-  expect(preview.y).toBeGreaterThan(track.y);
+  // 窄屏为全高 bottomsheet：顶把手 tabs 分层，同一时刻只显示一个分区
+  await expect(page.getByRole('tab', { name: '部件' })).toBeVisible();
+  await expect(page.getByText('添加部件（按落地页从上到下拼）')).toBeVisible();
+  await expect(page.getByText('编排轨道（拖拽或用按钮调整顺序）')).toBeHidden();
   await expectNoHorizontalScroll(page);
 
-  // 添加部件 → 编辑行为备注 → 切手机预览 → 保存回办公室 → 交稿
+  // 部件 tab 添加部件（编排轨道不在当前 tab，条目不可见）
   await page.getByRole('button', { name: '+ 导航栏' }).click();
   await page.getByRole('button', { name: '+ 主视觉' }).click();
   await page.getByRole('button', { name: '+ 立即购买 CTA' }).click();
+  await expect(page.locator('.asm-item').first()).toBeHidden();
+
+  // 切编排 tab：轨道可见、部件齐全，编辑行为备注
+  await page.getByRole('tab', { name: /^编排/ }).click();
+  await expect(page.getByText('编排轨道（拖拽或用按钮调整顺序）')).toBeVisible();
   await expect(page.locator('.asm-item')).toHaveCount(3);
   await page.getByLabel('行为备注（开发会看）').last().fill('点击后跳转手机版下单页');
+
+  // 切预览 tab：正常网页比例预览，手机模式可见 CTA
+  await page.getByRole('tab', { name: '预览' }).click();
+  await expect(page.getByText(/实时预览/)).toBeVisible();
   await page.getByRole('button', { name: '手机', exact: true }).click();
   await expect(page.locator('.pv-cta').filter({ hasText: '立即购买' })).toBeVisible();
   await expectNoHorizontalScroll(page);
   await shot(page, 'assembler-393.png');
 
+  // 底部固定操作栏保存回办公室
   await page.getByRole('button', { name: '保存并回到办公室' }).click();
   await expect(editor).toHaveCount(0);
   await page.getByRole('button', { name: '去经理室交稿' }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  // 印章入场动画（240ms，scale 2.2 起跳）已用 .boss-stage-wrap overflow:clip 限制在舞台内；
-  // 这里逐帧采样动画全程的 scrollWidth，不允许只等动画结束跳过入场阶段
+  // 印章入场动画（240ms，scale 2.2 起跳）可能造成瞬时溢出：
+  // 逐帧采样动画全程的 scrollWidth，不允许只等动画结束跳过入场阶段
   await page.evaluate(() => {
     const w = window as typeof window & { __maxOverflowX: number };
     w.__maxOverflowX = 0;
@@ -219,11 +227,12 @@ test('拼装器 393：上下结构，添加/编辑/预览/保存全流程可用'
   );
   expect(maxOverflow, '入场动画全程 documentElement/body 均不得超出视口').toBeLessThanOrEqual(1);
   await expectNoHorizontalScroll(page);
-  // 台词气泡完整落在舞台容器内：overflow:clip 只裁印章装饰，不裁正文与台词
-  const stage = (await page.locator('.boss-stage-wrap').boundingBox())!;
+  // 评审面板（全局经理室背景 + 深炭面板）：判定章与台词气泡都落在面板内
+  await expect(page.locator('.boss-verdict')).toBeVisible();
+  const panel = (await page.locator('.review-page').boundingBox())!;
   const bubble = (await page.locator('.boss-bubble').boundingBox())!;
-  expect(bubble.y).toBeGreaterThanOrEqual(stage.y - 0.5);
-  expect(bubble.y + bubble.height).toBeLessThanOrEqual(stage.y + stage.height + 0.5);
+  expect(bubble.y).toBeGreaterThanOrEqual(panel.y - 0.5);
+  expect(bubble.y + bubble.height).toBeLessThanOrEqual(panel.y + panel.height + 0.5);
   await shot(page, 'review-393.png');
 });
 
@@ -259,7 +268,7 @@ test.describe('全页面宽度审计：无横向滚动', () => {
       // 首页 + 三个模态框（玩法 / 图鉴 / 设置）
       await page.goto('/?seed=1');
       await expectNoHorizontalScroll(page);
-      if (width === 320 || width === 1280) await shot(page, `home-${width}.png`);
+      if (width === 320 || width === 393 || width === 1280) await shot(page, `home-${width}.png`);
       for (const name of ['玩法说明', '结局图鉴', '设置']) {
         await page.getByRole('button', { name }).click();
         await expect(page.getByRole('dialog')).toBeVisible();
@@ -305,22 +314,22 @@ test.describe('全页面宽度审计：无横向滚动', () => {
   }
 });
 
-test.describe('统一顶栏：品牌入口 + 玩法说明 / 结局图鉴 / 设置', () => {
+test.describe('游戏 HUD：品牌入口 + 玩法说明 / 结局图鉴 / 设置', () => {
   for (const width of [320, 393, 1280]) {
-    test(`${width}px 首页顶栏单行、触摸目标达标、三入口可用、底部无重复`, async ({ page }) => {
+    test(`${width}px 首页 HUD 品牌行、触摸目标达标、三入口可用、底部无重复`, async ({ page }) => {
       await page.setViewportSize({ width, height: width >= 768 ? 900 : 852 });
       await page.goto('/?seed=1');
-      await expect(page.locator('.topbar')).toBeVisible();
+      await expect(page.locator('.game-hud')).toBeVisible();
       await expectNoHorizontalScroll(page);
 
-      // 单行：三个工具按钮与品牌同一水平带（不换行、不溢出）
-      const brand = (await page.locator('.topbar .brand').boundingBox())!;
-      const tools = page.locator('.topbar .topbar-tool');
+      // 品牌与三个工具按钮同一水平带（移动两层 HUD 的第一行，不换行、不溢出）
+      const brand = (await page.locator('.hud-brand').boundingBox())!;
+      const tools = page.locator('.hud-tool');
       await expect(tools).toHaveCount(3);
       for (const btn of await tools.all()) {
         const box = (await btn.boundingBox())!;
-        expect(box.y, `${width}px 顶栏按钮应与品牌同行`).toBeLessThan(brand.y + brand.height);
-        expect(box.y + box.height, `${width}px 顶栏按钮应与品牌同行`).toBeGreaterThan(brand.y);
+        expect(box.y, `${width}px HUD 工具按钮应与品牌同行`).toBeLessThan(brand.y + brand.height);
+        expect(box.y + box.height, `${width}px HUD 工具按钮应与品牌同行`).toBeGreaterThan(brand.y);
         // 触摸目标 ≥44px、图标 22–24px
         expect(box.width).toBeGreaterThanOrEqual(44);
         expect(box.height).toBeGreaterThanOrEqual(44);
@@ -348,10 +357,10 @@ test.describe('统一顶栏：品牌入口 + 玩法说明 / 结局图鉴 / 设�
     });
   }
 
-  test('393 局内（工作台）顶栏不破版且含设置入口', async ({ page }) => {
+  test('393 局内（工作台）HUD 不破版且含设置入口', async ({ page }) => {
     await page.setViewportSize({ width: 393, height: 852 });
     await startClassicRun(page);
-    await expect(page.locator('.topbar')).toBeVisible();
+    await expect(page.locator('.game-hud')).toBeVisible();
     await expectNoHorizontalScroll(page);
 
     // 局内品牌可回首页；新增设置入口可用

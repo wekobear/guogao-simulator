@@ -24,9 +24,13 @@ type Props = {
 /** 品牌色预设：前四个在品牌橙距离阈值内，藏青是「跑偏」教学 */
 const BRAND_SWATCHES = ['#FF5722', '#E64A19', '#F7B733', '#D9383A', '#1A237E', '#212121'];
 
+type MobileTab = 'parts' | 'track' | 'preview';
+
 /**
- * 游戏内轻量拼装编辑器：部件池 → 编排轨道（拖拽 + 上移/下移/移除）→ 实时页面预览。
- * 部件顺序、备注、品牌色、导航连接都进入 AssemblyState，由 pageDoc 转真实 M3E Doc 检查。
+ * 场景内拼装编辑器（v0.3.0）：
+ * PC 中央宽 workbench——左部件池 / 中实时稿件预览 / 右编排轨道（属性）；
+ * 移动端全高 bottomsheet——顶把手 + 关闭，内部「部件 / 编排 / 预览」分层 tab 可滚，
+ * 底部固定操作栏保存回办公室。增删重排、变体、品牌色、高级画布与确认逻辑全部保留。
  */
 export function AssemblyEditor({
   state,
@@ -37,21 +41,19 @@ export function AssemblyEditor({
   onDiscardCanvas,
   onClose,
   storageWarning,
-  reduceMotion = false,
 }: Props) {
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [openPartId, setOpenPartId] = useState<string | null>(null);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOver, setDragOver] = useState<number | null>(null);
+  const [tab, setTab] = useState<MobileTab>('parts');
+  const [reqOpen, setReqOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  // 打开即呈现：滚到编辑器并聚焦（键盘用户可直接操作，不抢输入框）
+  // 打开即聚焦（键盘用户可直接操作，不抢输入框；overlay 全屏无需滚动定位）
   useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-    el.focus({ preventScroll: true });
-  }, [reduceMotion]);
+    rootRef.current?.focus({ preventScroll: true });
+  }, []);
 
   const addPart = (kind: PartKind) => {
     const def = PART_CATALOG[kind];
@@ -93,6 +95,27 @@ export function AssemblyEditor({
     setDragOver(null);
   };
 
+  const deviceSwitch = (extraClass: string) => (
+    <div className={`asm-switch ${extraClass}`} role="group" aria-label="预览设备">
+      <button
+        type="button"
+        className={device === 'desktop' ? 'on' : ''}
+        aria-pressed={device === 'desktop'}
+        onClick={() => setDevice('desktop')}
+      >
+        桌面
+      </button>
+      <button
+        type="button"
+        className={device === 'mobile' ? 'on' : ''}
+        aria-pressed={device === 'mobile'}
+        onClick={() => setDevice('mobile')}
+      >
+        手机
+      </button>
+    </div>
+  );
+
   return (
     <div
       ref={rootRef}
@@ -102,36 +125,53 @@ export function AssemblyEditor({
       tabIndex={-1}
     >
       <div className="asm-head">
-        <div>
+        <div className="asm-head-text">
           <p className="asm-title">设计工位 · 拼装落地页</p>
-          <p className="asm-sub">
-            需求：{requirementLines.slice(0, 2).join('；')}
-            {requirementLines.length > 2 ? '……' : ''}
-          </p>
+          <div className="asm-req-fold">
+            <button
+              type="button"
+              className="asm-req-chip"
+              aria-expanded={reqOpen}
+              onClick={() => setReqOpen((v) => !v)}
+            >
+              需求 {requirementLines.length} 条{reqOpen ? ' · 收起' : ' · 展开'}
+            </button>
+            {reqOpen ? (
+              <ol className="asm-req-lines">
+                {requirementLines.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ol>
+            ) : null}
+          </div>
         </div>
         <div className="asm-head-actions">
-          <div className="asm-switch" role="group" aria-label="预览设备">
-            <button
-              type="button"
-              className={device === 'desktop' ? 'on' : ''}
-              aria-pressed={device === 'desktop'}
-              onClick={() => setDevice('desktop')}
-            >
-              桌面
-            </button>
-            <button
-              type="button"
-              className={device === 'mobile' ? 'on' : ''}
-              aria-pressed={device === 'mobile'}
-              onClick={() => setDevice('mobile')}
-            >
-              手机
-            </button>
-          </div>
-          <button type="button" className="btn asm-close" onClick={onClose}>
+          {deviceSwitch('asm-head-switch')}
+          <button type="button" className="btn asm-close asm-close-desktop" onClick={onClose}>
             保存并回到办公室
           </button>
         </div>
+      </div>
+
+      <div className="asm-tabs" role="tablist" aria-label="编辑区分页">
+        {(
+          [
+            ['parts', '部件'],
+            ['track', `编排${state.parts.length > 0 ? ` · ${state.parts.length}` : ''}`],
+            ['preview', '预览'],
+          ] as [MobileTab, string][]
+        ).map(([key, label]) => (
+          <button
+            key={key}
+            type="button"
+            role="tab"
+            aria-selected={tab === key}
+            className={`asm-tab${tab === key ? ' on' : ''}`}
+            onClick={() => setTab(key)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       {fromCanvas ? (
@@ -147,7 +187,7 @@ export function AssemblyEditor({
           </div>
         </div>
       ) : (
-        <div className="asm-body">
+        <div className="asm-body" data-tab={tab}>
           <section className="asm-dock" aria-label="部件池">
             <p className="asm-label">添加部件（按落地页从上到下拼）</p>
             <div className="asm-pool">
@@ -304,9 +344,12 @@ export function AssemblyEditor({
           </section>
 
           <section className="asm-preview" aria-label="实时页面预览">
-            <p className="asm-label">
-              实时预览 · {device === 'desktop' ? '桌面 1280' : '手机 412'}
-            </p>
+            <div className="asm-preview-head">
+              <p className="asm-label">
+                实时预览 · {device === 'desktop' ? '桌面 1280' : '手机 412'}
+              </p>
+              {deviceSwitch('asm-preview-switch')}
+            </div>
             <div className={`asm-page ${device}`}>
               {state.parts.length === 0 ? (
                 <p className="asm-page-empty">（空白页）</p>
@@ -327,6 +370,11 @@ export function AssemblyEditor({
           当前浏览器无法保存草稿，本次编辑只在内存里，刷新会丢。
         </div>
       ) : null}
+      <div className="asm-foot">
+        <button type="button" className="btn btn-primary asm-save" onClick={onClose}>
+          保存并回到办公室
+        </button>
+      </div>
     </div>
   );
 }
